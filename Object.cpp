@@ -22,6 +22,32 @@ namespace {
     }
 }
 
+Object::Object(Object &&other) {
+    vao = other.vao;
+    vbo = other.vbo;
+    ebo = other.ebo;
+
+    other.vao = 0;
+    other.vbo = 0;
+    other.ebo = 0;
+}
+
+Object& Object::operator=(Object &&other) {
+    glDeleteVertexArray(vao);
+    glDeleteBuffer(vbo);
+    glDeleteBuffer(ebo);
+
+    vao = other.vao;
+    vbo = other.vbo;
+    ebo = other.ebo;
+
+    other.vao = 0;
+    other.vbo = 0;
+    other.ebo = 0;
+
+    return *this;
+}
+
 Object::Object(const vector<GLfloat> vertices, const vector<GLuint> indices)
     : vao { glGenVertexArray() }
     , vbo { glGenBuffer() }
