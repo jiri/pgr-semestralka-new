@@ -11,6 +11,11 @@ using namespace std;
 #include <imgui.h>
 #include <imgui_impl_glfw_gl3.h>
 
+#include <glm/glm.hpp>
+#include <glm/gtx/transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+using namespace glm;
+
 #include "Program.h"
 #include "Object.h"
 
@@ -82,6 +87,14 @@ int main() {
 
     Object cube { vertices, indices };
 
+    /* Matrices */
+    mat4 mvp;
+
+    mvp *= perspective(radians(65.0f), 4.0f/ 3.0f, 0.01f, 100.0f);
+    mvp *= lookAt(vec3(0.0f, 3.0f, 3.0f), vec3(0.0f), vec3(0.0f, 1.0f, 0.0f));
+
+    GLint mvp_loc = glGetUniformLocation(simple, "MVP");
+
     while (!glfwWindowShouldClose(window)) {
         /* Handle input */
         glfwPollEvents();
@@ -90,7 +103,13 @@ int main() {
         glClearColor(0.1f, 0.1f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+        mat4 mvp_ { mvp };
+
+        mvp_ *= rotate((GLfloat) glfwGetTime(), vec3(0.3f, 0.8f, 1.0f));
+
         glUseProgram(simple);
+            glUniformMatrix4fv(mvp_loc, 1, GL_FALSE, value_ptr(mvp_));
+
             cube.draw();
         glUseProgram(0);
 
