@@ -1,5 +1,7 @@
 #include "Object.h"
 
+#include <imgui.h>
+
 namespace {
     GLuint glGenVertexArray() {
         GLuint id;
@@ -53,6 +55,7 @@ Object::Object()
     , vbo { glGenBuffer() }
     , ebo { glGenBuffer() }
     , numIndices { 0 }
+    , visible { GL_TRUE }
 {
     glBindVertexArray(vao);
 
@@ -88,10 +91,23 @@ void Object::loadData(const vector<GLfloat> &vertices, const vector<GLuint> &ind
     glBindVertexArray(0);
 }
 
-void Object::draw() const {
-    glBindVertexArray(vao);
+void Object::draw(Program &p) const {
+    if (visible) {
+        glBindVertexArray(vao);
 
-    glDrawElements(GL_TRIANGLES, numIndices, GL_UNSIGNED_INT, nullptr);
+        auto loc = glGetUniformLocation(p, "model");
+        glUniformMatrix4fv(loc, 1, GL_FALSE, value_ptr(model));
 
-    glBindVertexArray(0);
+        glDrawElements(GL_TRIANGLES, numIndices, GL_UNSIGNED_INT, nullptr);
+
+        glBindVertexArray(0);
+    }
+
+    for (auto &child : children) {
+        child->draw(p);
+    }
+}
+
+void Object::edit() {
+    ImGui::Checkbox("visible", &visible);
 }

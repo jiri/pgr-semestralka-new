@@ -136,16 +136,21 @@ int main() {
     Program simple { "Simple", "shd/simple.vert", "shd/simple.frag" };
 
     /* Load data */
-    SceneGraph sceneGraph { move(make_unique<Cube>()) };
-//    Cube cube;
+    auto c = make_unique<Cube>();
+    c->model = scale(vec3(2.0f));
+
+    auto c2 = make_unique<Cube>();
+    c2->model = translate(vec3(2.0f, 0.0f, 0.0f));
+
+    c->add_child(move(c2));
+
+    SceneGraph sceneGraph { move(c) };
 
     /* Matrices */
-    mat4 mvp;
+    mat4 projection =  perspective(radians(65.0f), 4.0f/ 3.0f, 0.01f, 100.0f);
 
-    mvp *= perspective(radians(65.0f), 4.0f/ 3.0f, 0.01f, 100.0f);
-    // mvp *= lookAt(vec3(0.0f, 3.0f, 3.0f), vec3(0.0f), vec3(0.0f, 1.0f, 0.0f));
-
-    GLint mvp_loc = glGetUniformLocation(simple, "MVP");
+    auto p_loc = glGetUniformLocation(simple, "projection");
+    auto v_loc = glGetUniformLocation(simple, "view");
 
     while (!glfwWindowShouldClose(window)) {
         /* Handle input */
@@ -179,19 +184,14 @@ int main() {
         glClearColor(0.1f, 0.1f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        mat4 mvp_ { mvp };
-
-        mvp_ *= as.camera.viewMatrix();
-        // mvp_ *= rotate((GLfloat) glfwGetTime(), vec3(0.3f, 0.8f, 1.0f));
-
         glUseProgram(simple);
-            glUniformMatrix4fv(mvp_loc, 1, GL_FALSE, value_ptr(mvp_));
+            glUniformMatrix4fv(p_loc, 1, GL_FALSE, value_ptr(projection));
+            glUniformMatrix4fv(v_loc, 1, GL_FALSE, value_ptr(as.camera.viewMatrix()));
 
-            sceneGraph.draw();
+            sceneGraph.draw(simple);
         glUseProgram(0);
 
-        ImGui::Text("Hello, world!");
-        ImGui::Button("Hello!");
+        sceneGraph.tree_view();
 
         ImGui::Render();
 
