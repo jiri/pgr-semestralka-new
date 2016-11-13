@@ -19,8 +19,10 @@ public:
     Object(Object &&other);
     Object& operator=(Object &&other);
 
-    Object(const vector<GLfloat> vertices, const vector<GLuint> indices);
+    Object();
+    Object(const vector<GLfloat> &vertices, const vector<GLuint> &indices);
     virtual ~Object();
 
+    void loadData(const vector<GLfloat> &vertices, const vector<GLuint> &indices);
     void draw() const;
 };

@@ -48,22 +48,27 @@ Object& Object::operator=(Object &&other) {
     return *this;
 }
 
-Object::Object(const vector<GLfloat> vertices, const vector<GLuint> indices)
+Object::Object()
     : vao { glGenVertexArray() }
     , vbo { glGenBuffer() }
     , ebo { glGenBuffer() }
-    , numIndices { static_cast<GLuint>(indices.size()) }
+    , numIndices { 0 }
 {
     glBindVertexArray(vao);
-        glBindBuffer(GL_ARRAY_BUFFER, vbo);
-        glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(GLfloat), vertices.data(), GL_STATIC_DRAW);
 
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLfloat), indices.data(), GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
 
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), nullptr);
-        glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), nullptr);
+    glEnableVertexAttribArray(0);
+
     glBindVertexArray(0);
+}
+
+Object::Object(const vector<GLfloat> &vertices, const vector<GLuint> &indices)
+    : Object()
+{
+    loadData(vertices, indices);
 }
 
 Object::~Object() {
@@ -72,8 +77,21 @@ Object::~Object() {
     glDeleteBuffer(ebo);
 }
 
+void Object::loadData(const vector<GLfloat> &vertices, const vector<GLuint> &indices) {
+    numIndices = static_cast<GLuint>(indices.size());
+
+    glBindVertexArray(vao);
+
+    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(GLfloat), vertices.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLfloat), indices.data(), GL_STATIC_DRAW);
+
+    glBindVertexArray(0);
+}
+
 void Object::draw() const {
     glBindVertexArray(vao);
-        glDrawElements(GL_TRIANGLES, numIndices, GL_UNSIGNED_INT, nullptr);
+
+    glDrawElements(GL_TRIANGLES, numIndices, GL_UNSIGNED_INT, nullptr);
+
     glBindVertexArray(0);
 }

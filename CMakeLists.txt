@@ -36,7 +36,7 @@ if (APPLE)
 endif ()
 
 # Add targets
-set(SOURCE_FILES main.cpp Program.cpp Program.h Object.cpp Object.h SceneGraph.cpp SceneGraph.h Camera.cpp Camera.h)
+set(SOURCE_FILES main.cpp Program.cpp Program.h Object.cpp Object.h SceneGraph.cpp SceneGraph.h Camera.cpp Camera.h Cube.cpp Cube.h)
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 

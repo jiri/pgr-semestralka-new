@@ -17,8 +17,9 @@ using namespace std;
 using namespace glm;
 
 #include "Program.h"
-#include "Object.h"
 #include "Camera.h"
+#include "Object.h"
+#include "Cube.h"
 
 void error_callback(int /* error */, const char *message) {
     cerr << "GLFW error: " << message << endl;
@@ -112,32 +113,8 @@ int main() {
     /* Load shaders */
     Program simple { "Simple", "shd/simple.vert", "shd/simple.frag" };
 
-    /* Create data */
-                               /*                       */
-                               /* y                z    */
-    vector<GLfloat> vertices { /* |               /     */
-      -0.5f, -0.5f, -0.5f,     /*                       */
-      -0.5f, -0.5f,  0.5f,     /*    3---------7        */
-      -0.5f,  0.5f, -0.5f,     /*   /|        /|        */
-      -0.5f,  0.5f,  0.5f,     /*  / |       / |        */
-       0.5f, -0.5f, -0.5f,     /* 2---------6  |        */
-       0.5f, -0.5f,  0.5f,     /* |  |      |  |        */
-       0.5f,  0.5f, -0.5f,     /* |  1------|--5        */
-       0.5f,  0.5f,  0.5f,     /* | /       | /         */
-    };                         /* |/        |/          */
-                               /* 0---------4     -- x  */
-                               /*                       */
-
-    vector<GLuint> indices {
-      0, 1, 2,  1, 3, 2,
-      0, 2, 4,  4, 2, 6,
-      0, 4, 1,  5, 1, 4,
-      5, 4, 6,  5, 6, 7,
-      6, 2, 3,  6, 3, 7,
-      1, 5, 3,  5, 7, 3,
-    };
-
-    Object cube { vertices, indices };
+    /* Load data */
+    Cube cube;
 
     /* Matrices */
     mat4 mvp;
