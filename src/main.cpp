@@ -31,6 +31,7 @@ void error_callback(int /* error */, const char *message) {
 struct AppState {
     Camera camera;
     bool keys[1024];
+    bool cameraActive;
 };
 
 void key_callback(GLFWwindow *w, int key, int scancode, int action, int mods) {
@@ -38,8 +39,22 @@ void key_callback(GLFWwindow *w, int key, int scancode, int action, int mods) {
 
     if (action == GLFW_PRESS) {
         as.keys[key] = true;
+
+        if (key == GLFW_KEY_TAB) {
+            as.cameraActive = !as.cameraActive;
+        }
     } else if (action == GLFW_RELEASE) {
         as.keys[key] = false;
+    }
+
+    if (as.cameraActive) {
+        glfwSetInputMode(w, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    } else {
+        glfwSetInputMode(w, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+    }
+
+    if (!as.cameraActive) {
+        ImGui_ImplGlfwGL3_KeyCallback(w, key, scancode, action, mods);
     }
 }
 
@@ -55,14 +70,16 @@ void pos_callback(GLFWwindow *w, double x, double y) {
 
     auto& as = *static_cast<AppState *>(glfwGetWindowUserPointer(w));
 
-    as.camera.yaw   += dx * 0.1f;
-    as.camera.pitch -= dy * 0.1f;
+    if (as.cameraActive) {
+        as.camera.yaw   += dx * 0.1f;
+        as.camera.pitch -= dy * 0.1f;
 
-    if (as.camera.pitch > 89.0f) {
-        as.camera.pitch = 89.0f;
-    }
-    if (as.camera.pitch < -89.0f) {
-        as.camera.pitch = -89.0f;
+        if (as.camera.pitch > 89.0f) {
+            as.camera.pitch = 89.0f;
+        }
+        if (as.camera.pitch < -89.0f) {
+            as.camera.pitch = -89.0f;
+        }
     }
 }
 
@@ -83,6 +100,9 @@ int main() {
 
     glfwSetKeyCallback(window, key_callback);
     glfwSetCursorPosCallback(window, pos_callback);
+    glfwSetMouseButtonCallback(window, ImGui_ImplGlfwGL3_MouseButtonCallback);
+    glfwSetScrollCallback(window, ImGui_ImplGlfwGL3_ScrollCallback);
+    glfwSetCharCallback(window, ImGui_ImplGlfwGL3_CharCallback);
 
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
@@ -90,12 +110,13 @@ int main() {
     AppState as {
             .camera = { vec3(0.0f, 3.0f, 3.0f), vec3(0.0f, 0.0f, 0.0f) },
             .keys   = { GL_FALSE },
+            .cameraActive = GL_TRUE,
     };
 
     glfwSetWindowUserPointer(window, &as);
 
     /* Initialize ImGui */
-    // ImGui_ImplGlfwGL3_Init(window, true);
+    ImGui_ImplGlfwGL3_Init(window, false);
 
     /* Initialize OpenGL */
     glfwMakeContextCurrent(window);
@@ -129,26 +150,29 @@ int main() {
     while (!glfwWindowShouldClose(window)) {
         /* Handle input */
         glfwPollEvents();
+        ImGui_ImplGlfwGL3_NewFrame();
 
         GLfloat cameraSpeed = 0.1f;
 
-        if (as.keys[GLFW_KEY_W]) {
-            as.camera.position += cameraSpeed * as.camera.front();
-        }
-        if (as.keys[GLFW_KEY_S]) {
-            as.camera.position -= cameraSpeed * as.camera.front();
-        }
-        if (as.keys[GLFW_KEY_A]) {
-            as.camera.position -= as.camera.right() * cameraSpeed;
-        }
-        if (as.keys[GLFW_KEY_D]) {
-            as.camera.position += as.camera.right() * cameraSpeed;
-        }
-        if (as.keys[GLFW_KEY_LEFT_SHIFT]) {
-            as.camera.position -= as.camera.up * cameraSpeed;
-        }
-        if (as.keys[GLFW_KEY_SPACE]) {
-            as.camera.position += as.camera.up * cameraSpeed;
+        if (as.cameraActive) {
+            if (as.keys[GLFW_KEY_W]) {
+                as.camera.position += cameraSpeed * as.camera.front();
+            }
+            if (as.keys[GLFW_KEY_S]) {
+                as.camera.position -= cameraSpeed * as.camera.front();
+            }
+            if (as.keys[GLFW_KEY_A]) {
+                as.camera.position -= as.camera.right() * cameraSpeed;
+            }
+            if (as.keys[GLFW_KEY_D]) {
+                as.camera.position += as.camera.right() * cameraSpeed;
+            }
+            if (as.keys[GLFW_KEY_LEFT_SHIFT]) {
+                as.camera.position -= as.camera.up * cameraSpeed;
+            }
+            if (as.keys[GLFW_KEY_SPACE]) {
+                as.camera.position += as.camera.up * cameraSpeed;
+            }
         }
 
         /* Render */
@@ -166,11 +190,18 @@ int main() {
             sceneGraph.draw();
         glUseProgram(0);
 
+        ImGui::Text("Hello, world!");
+        ImGui::Button("Hello!");
+
+        ImGui::Render();
+
         /* Present */
         glfwSwapBuffers(window);
     }
 
     /* Cleanup and exit */
     glfwTerminate();
+    ImGui_ImplGlfwGL3_Shutdown();
+
     return 0;
 }
