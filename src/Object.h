@@ -5,7 +5,9 @@ using namespace std;
 
 #include <GL/glew.h>
 
-class Object {
+#include "SceneGraph.h"
+
+class Object : public SceneNode {
 private:
     GLuint vao;
     GLuint vbo, ebo;

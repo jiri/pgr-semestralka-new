@@ -20,6 +20,7 @@ using namespace glm;
 #include "Camera.h"
 #include "Object.h"
 #include "Cube.h"
+#include "SceneGraph.h"
 
 void error_callback(int /* error */, const char *message) {
     cerr << "GLFW error: " << message << endl;
@@ -114,7 +115,8 @@ int main() {
     Program simple { "Simple", "shd/simple.vert", "shd/simple.frag" };
 
     /* Load data */
-    Cube cube;
+    SceneGraph sceneGraph { move(make_unique<Cube>()) };
+//    Cube cube;
 
     /* Matrices */
     mat4 mvp;
@@ -161,7 +163,7 @@ int main() {
         glUseProgram(simple);
             glUniformMatrix4fv(mvp_loc, 1, GL_FALSE, value_ptr(mvp_));
 
-            cube.draw();
+            sceneGraph.draw();
         glUseProgram(0);
 
         /* Present */

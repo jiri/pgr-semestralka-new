@@ -1,23 +1,31 @@
 #pragma once
 
+#include <vector>
+using namespace std;
+
 #include <glm/glm.hpp>
 using namespace glm;
 
 class SceneNode {
 public:
-    mat4 transformation;
+    vector<unique_ptr<SceneNode>> children;
 
+    void add_child(unique_ptr<SceneNode> &&ptr) {
+        children.push_back(move(ptr));
+    }
 
-};
-
-class ObjectNode : public SceneNode {
-private:
-};
-
-class TransformationNode : public SceneNode {
+    virtual void draw() const = 0;
 };
 
 class SceneGraph {
 public:
-    SceneNode root;
+    unique_ptr<SceneNode> root;
+
+    SceneGraph(unique_ptr<SceneNode> &&root)
+        : root { move(root) }
+    { }
+
+    void draw() {
+        root->draw();
+    }
 };
