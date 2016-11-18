@@ -56,6 +56,7 @@ Object::Object()
     , ebo { glGenBuffer() }
     , numIndices { 0 }
     , visible { GL_TRUE }
+    , model { 1.0f }
 {
     glBindVertexArray(vao);
 
@@ -103,11 +104,11 @@ void Object::draw(Program &p) const {
         glBindVertexArray(0);
     }
 
-    for (auto &child : children) {
-        child->draw(p);
-    }
+//    for (auto &child : children) {
+//        child->draw(p);
+//    }
 }
 
-void Object::edit() {
-    ImGui::Checkbox("visible", &visible);
-}
+//void Object::edit() {
+//    ImGui::Checkbox("visible", &visible);
+//}

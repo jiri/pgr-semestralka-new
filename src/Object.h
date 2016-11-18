@@ -9,16 +9,18 @@ using namespace glm;
 
 #include <GL/glew.h>
 
-#include "SceneGraph.h"
+#include "Program.h"
 
-class Object : public SceneNode {
-private:
+class Object {
+public:
     GLuint vao;
     GLuint vbo, ebo;
 
     GLuint numIndices;
 
     bool visible;
+
+    mat4 model;
 
 public:
     Object(const Object &other) = delete;
@@ -33,5 +35,5 @@ public:
 
     void loadData(const vector<GLfloat> &vertices, const vector<GLuint> &indices);
     void draw(Program &program) const;
-    void edit();
+    // void edit();
 };

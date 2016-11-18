@@ -135,6 +135,7 @@ int main() {
     /* Load shaders */
     Program simple { "Simple", "shd/simple.vert", "shd/simple.frag" };
     Program phong  { "Phong",  "shd/phong.vert",  "shd/phong.frag"  };
+    Program lamp   { "Light",  "shd/light.vert",  "shd/light.frag"  };
 
     /* Load data */
     auto cube = Cube();
@@ -146,8 +147,10 @@ int main() {
     /* Matrices */
     mat4 projection =  perspective(radians(65.0f), 4.0f/ 3.0f, 0.01f, 100.0f);
 
-    auto p_loc = glGetUniformLocation(simple, "projection");
-    auto v_loc = glGetUniformLocation(simple, "view");
+    auto p_loc  = glGetUniformLocation(phong, "projection");
+    auto v_loc  = glGetUniformLocation(phong, "view");
+    auto oc_loc = glGetUniformLocation(phong, "objectColor");
+    auto lc_loc = glGetUniformLocation(phong, "lightColor");
 
     while (!glfwWindowShouldClose(window)) {
         /* Handle input */
@@ -181,11 +184,22 @@ int main() {
         glClearColor(0.1f, 0.1f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        glUseProgram(simple);
+        glUseProgram(phong);
             glUniformMatrix4fv(p_loc, 1, GL_FALSE, value_ptr(projection));
             glUniformMatrix4fv(v_loc, 1, GL_FALSE, value_ptr(as.camera.viewMatrix()));
 
+            glUniform3fv(oc_loc, 1, value_ptr(cube.color));
+            glUniform3fv(lc_loc, 1, value_ptr(light.color));
+
             cube.draw(simple);
+        glUseProgram(0);
+
+        glUseProgram(lamp);
+            glUniformMatrix4fv(glGetUniformLocation(lamp, "projection"), 1, GL_FALSE, value_ptr(projection));
+            glUniformMatrix4fv(glGetUniformLocation(lamp, "view"), 1, GL_FALSE, value_ptr(as.camera.viewMatrix()));
+
+            glUniform3fv(glGetUniformLocation(lamp, "lightColor"), 1, value_ptr(light.color));
+
             light.draw(simple);
         glUseProgram(0);
 
