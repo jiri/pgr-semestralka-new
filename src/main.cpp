@@ -20,7 +20,7 @@ using namespace glm;
 #include "Camera.h"
 #include "Object.h"
 #include "Cube.h"
-#include "SceneGraph.h"
+#include "Light.h"
 
 void error_callback(int /* error */, const char *message) {
     cerr << "GLFW error: " << message << endl;
@@ -137,17 +137,11 @@ int main() {
     Program phong  { "Phong",  "shd/phong.vert",  "shd/phong.frag"  };
 
     /* Load data */
-    auto c = make_unique<Cube>();
-    c->model = scale(vec3(2.0f));
+    auto cube = Cube();
+    cube.model = scale(vec3(2.0f));
 
-    auto c2 = make_unique<Cube>();
-    c2->model = translate(vec3(2.0f, 0.0f, 0.0f));
-
-    c->add_child(move(c2));
-
-    /* TODO: Node<T> = SceneGraph.add_child(T) */
-
-    SceneGraph sceneGraph { move(c) };
+    auto light = Light(vec3(1.0f, 1.0f, 1.0f));
+    light.model = translate(vec3(5.0f, 0.0f, 0.0f));
 
     /* Matrices */
     mat4 projection =  perspective(radians(65.0f), 4.0f/ 3.0f, 0.01f, 100.0f);
@@ -191,10 +185,9 @@ int main() {
             glUniformMatrix4fv(p_loc, 1, GL_FALSE, value_ptr(projection));
             glUniformMatrix4fv(v_loc, 1, GL_FALSE, value_ptr(as.camera.viewMatrix()));
 
-            sceneGraph.draw(simple);
+            cube.draw(simple);
+            light.draw(simple);
         glUseProgram(0);
-
-        sceneGraph.tree_view();
 
         ImGui::Render();
 

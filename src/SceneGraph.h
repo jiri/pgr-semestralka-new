@@ -10,6 +10,8 @@ using namespace glm;
 
 #include "Program.h"
 
+/* TODO: Node<T> = SceneGraph.add_child(T) */
+
 class SceneNode {
 private:
     bool selected;
