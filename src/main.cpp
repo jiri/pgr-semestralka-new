@@ -134,6 +134,7 @@ int main() {
 
     /* Load shaders */
     Program simple { "Simple", "shd/simple.vert", "shd/simple.frag" };
+    Program phong  { "Phong",  "shd/phong.vert",  "shd/phong.frag"  };
 
     /* Load data */
     auto c = make_unique<Cube>();
@@ -143,6 +144,8 @@ int main() {
     c2->model = translate(vec3(2.0f, 0.0f, 0.0f));
 
     c->add_child(move(c2));
+
+    /* TODO: Node<T> = SceneGraph.add_child(T) */
 
     SceneGraph sceneGraph { move(c) };
 

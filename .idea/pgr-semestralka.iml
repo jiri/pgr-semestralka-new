@@ -7,12 +7,14 @@
       <sourceFolder url="file://$MODULE_DIR$/src/Object.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/Program.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/main.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/Cube.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/SceneGraph.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/Cube.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/Object.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/Program.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/SceneGraph.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/Light.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/Object.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/SceneGraph.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/Program.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/Light.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/Cube.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/SOIL/src/stb_image_aug.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/SOIL/src/stb_image_aug.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/SOIL/src/image_helper.c" isTestSource="false" />
@@ -23,8 +25,8 @@
       <sourceFolder url="file://$MODULE_DIR$/SOIL/src/image_helper.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/CMakeLists.txt" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/imgui/src/imgui_draw.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/imgui/src/imgui_demo.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/imgui/src/imgui.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/imgui/src/imgui_demo.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/imgui/src/imgui_impl_glfw_gl3.cpp" isTestSource="false" />
     </content>
     <orderEntry type="sourceFolder" forTests="false" />

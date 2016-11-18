@@ -37,4 +37,5 @@ namespace {
 
 Cube::Cube()
     : Object(vertices, indices)
+    , color { 0.133f, 0.545f, 0.133f }
 { }
