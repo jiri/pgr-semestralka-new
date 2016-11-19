@@ -102,3 +102,7 @@ Program::Program(string name, const Shader &vsh, const Shader &fsh)
 Program::~Program() {
     glDeleteProgram(id);
 }
+
+GLint Program::location(string name) const {
+    return glGetUniformLocation(id, name.c_str());
+}

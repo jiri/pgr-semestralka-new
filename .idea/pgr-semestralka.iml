@@ -13,6 +13,7 @@
       <sourceFolder url="file://$MODULE_DIR$/src/SceneGraph.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/Light.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/Program.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/glmUniforms.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/GLObject.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/main.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/Camera.cpp" isTestSource="false" />

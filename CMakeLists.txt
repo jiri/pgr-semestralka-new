@@ -36,7 +36,7 @@ if (APPLE)
 endif ()
 
 # Add targets
-set(SOURCE_FILES src/main.cpp src/Program.cpp src/Program.h src/Object.cpp src/Object.h src/SceneGraph.cpp src/SceneGraph.h src/Camera.cpp src/Camera.h src/Cube.cpp src/Cube.h src/Light.cpp src/Light.h src/GLObject.cpp src/GLObject.h)
+set(SOURCE_FILES src/main.cpp src/Program.cpp src/Program.h src/Object.cpp src/Object.h src/SceneGraph.cpp src/SceneGraph.h src/Camera.cpp src/Camera.h src/Cube.cpp src/Cube.h src/Light.cpp src/Light.h src/GLObject.cpp src/GLObject.h src/glmUniforms.cpp)
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 
