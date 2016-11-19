@@ -151,6 +151,10 @@ int main() {
     auto v_loc  = glGetUniformLocation(phong, "view");
     auto oc_loc = glGetUniformLocation(phong, "objectColor");
     auto lc_loc = glGetUniformLocation(phong, "lightColor");
+    auto lp_loc = glGetUniformLocation(phong, "lightPosition");
+    auto cp_loc = glGetUniformLocation(phong, "cameraPosition");
+
+    vec3 pos = vec3(4.0f, 0.0f, 0.0f);
 
     while (!glfwWindowShouldClose(window)) {
         /* Handle input */
@@ -180,8 +184,13 @@ int main() {
             }
         }
 
+        /* Manipulation */
+        ImGui::SliderFloat3("Light position", value_ptr(pos), -10.0f, 10.0f);
+
+        light.model = translate(pos);
+
         /* Render */
-        glClearColor(0.1f, 0.1f, 0.0f, 1.0f);
+        glClearColor(0.059f, 0.057f, 0.073f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         glUseProgram(phong);
@@ -190,8 +199,10 @@ int main() {
 
             glUniform3fv(oc_loc, 1, value_ptr(cube.color));
             glUniform3fv(lc_loc, 1, value_ptr(light.color));
+            glUniform3fv(lp_loc, 1, value_ptr(vec3(light.model * vec4(0.0f, 0.0f, 0.0f, 1.0f))));
+            glUniform3fv(cp_loc, 1, value_ptr(as.camera.position));
 
-            cube.draw(simple);
+            cube.draw(phong);
         glUseProgram(0);
 
         glUseProgram(lamp);
@@ -200,7 +211,7 @@ int main() {
 
             glUniform3fv(glGetUniformLocation(lamp, "lightColor"), 1, value_ptr(light.color));
 
-            light.draw(simple);
+            light.draw(lamp);
         glUseProgram(0);
 
         ImGui::Render();
