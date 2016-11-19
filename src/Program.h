@@ -5,6 +5,7 @@
 using namespace std;
 
 #include <GL/glew.h>
+#include "GLObject.h"
 
 class compilation_error : public exception {
 public:
@@ -36,43 +37,17 @@ public:
     }
 };
 
-class Shader {
-private:
-    GLuint id;
-
+class Shader : public GLObject {
 public:
-    Shader(const Shader &other) = delete;
-    Shader& operator=(const Shader &other) = delete;
-
-    Shader(Shader &&other);
-    Shader& operator=(Shader &&other);
-
     Shader(const char *path);
     Shader(string path, GLenum type);
     ~Shader();
-
-    operator GLuint() const {
-        return id;
-    }
 };
 
-class Program {
-private:
-    GLuint id;
-
+class Program : public GLObject {
 public:
     const string name;
 
-    Program(const Program &other) = delete;
-    Program& operator=(const Program &other) = delete;
-
-    Program(Program &&other);
-    Program& operator=(Program &&other);
-
     Program(string name, const Shader &vsh, const Shader &fsh);
     ~Program();
-
-    operator GLuint() const {
-        return id;
-    }
 };

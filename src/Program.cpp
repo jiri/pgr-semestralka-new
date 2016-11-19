@@ -44,23 +44,12 @@ namespace {
 }
 
 /* Shader implementation */
-Shader::Shader(Shader &&other) {
-    id = other.id;
-    other.id = 0;
-}
-Shader& Shader::operator=(Shader &&other) {
-    id = other.id;
-    other.id = 0;
-
-    return *this;
-}
-
 Shader::Shader(const char *path)
     : Shader { path, guessTypeFromPath(path) }
 { }
 
 Shader::Shader(string path, GLenum type)
-    : id { glCreateShader(type) }
+    : GLObject { glCreateShader(type) }
 {
     const char *src = slurp_file(path.c_str());
     glShaderSource(id, 1, &src, nullptr);
@@ -85,21 +74,8 @@ Shader::~Shader() {
 }
 
 /* Program implementation */
-Program::Program(Program &&other) {
-    id = other.id;
-    other.id = 0;
-}
-Program& Program::operator=(Program &&other) {
-    glDeleteProgram(id);
-
-    id = other.id;
-    other.id = 0;
-
-    return *this;
-}
-
 Program::Program(string name, const Shader &vsh, const Shader &fsh)
-    : id { glCreateProgram() }
+    : GLObject { glCreateProgram() }
     , name { name }
 {
     glAttachShader(id, vsh);
