@@ -21,6 +21,7 @@ using namespace glm;
 #include "Object.h"
 #include "Cube.h"
 #include "Light.h"
+#include "Material.h"
 
 void error_callback(int /* error */, const char *message) {
     cerr << "GLFW error: " << message << endl;
@@ -83,6 +84,23 @@ void pos_callback(GLFWwindow *w, double x, double y) {
     }
 }
 
+void my_terminate() {
+    try {
+        auto e = current_exception();
+        rethrow_exception(e);
+    } catch (compilation_error &e) {
+        cout << e.infoLog << endl;
+    } catch (link_error &e) {
+        cout << e.infoLog << endl;
+    } catch (exception &e) {
+        cout << e.what() << endl;
+    } catch (...) {
+        /* ... */
+    }
+
+    exit(EXIT_FAILURE);
+}
+
 int main() {
     /* Create a window */
     glfwSetErrorCallback(error_callback);
@@ -140,6 +158,13 @@ int main() {
     auto cube = Cube();
     cube.model = scale(vec3(2.0f));
 
+    Material mat {
+            vec3 { 1.0f, 0.5f, 0.3f },
+            vec3 { 1.0f, 0.5f, 0.3f },
+            vec3 { 0.5f, 0.5f, 0.5f },
+            32.0f,
+    };
+
     auto light = Light(vec3(1.0f, 1.0f, 1.0f));
     light.model = translate(vec3(5.0f, 0.0f, 0.0f));
 
@@ -189,9 +214,10 @@ int main() {
             phong.setUniform("projection", projection);
             phong.setUniform("view", as.camera.viewMatrix());
 
-            phong.setUniform("objectColor", cube.color);
-            phong.setUniform("lightColor", light.color);
-            phong.setUniform("lightPosition", vec3(light.model * vec4(0.0f, 0.0f, 0.0f, 1.0f)));
+            phong.setUniform("material", mat);
+            phong.setUniform("light", light);
+            phong.setUniform("light.position", vec3(light.model * vec4(0.0f, 0.0f, 0.0f, 1.0f)));
+
             phong.setUniform("cameraPosition", as.camera.position);
 
             cube.draw(phong);
@@ -201,7 +227,7 @@ int main() {
             lamp.setUniform("projection", projection);
             lamp.setUniform("view", as.camera.viewMatrix());
 
-            lamp.setUniform("lightColor", light.color);
+            lamp.setUniform("light", light);
 
             light.draw(lamp);
         glUseProgram(0);
