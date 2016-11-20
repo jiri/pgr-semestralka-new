@@ -113,6 +113,7 @@ int main() {
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT,   GL_TRUE);
     glfwWindowHint(GLFW_RESIZABLE,               GL_FALSE);
     glfwWindowHint(GLFW_FOCUSED,                 GL_TRUE);
+    glfwWindowHint(GLFW_SAMPLES,                 2);
 
     auto window = glfwCreateWindow(800, 600, "", nullptr, nullptr);
 
