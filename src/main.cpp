@@ -2,10 +2,11 @@
 #include <vector>
 using namespace std;
 
+#define TINYOBJLOADER_IMPLEMENTATION
 #define GLFW_INCLUDE_NONE
-#include <GLFW/glfw3.h>
-
 #define GLEW_STATIC
+
+#include <GLFW/glfw3.h>
 #include <GL/glew.h>
 
 #include <imgui.h>
@@ -15,6 +16,8 @@ using namespace std;
 #include <glm/gtx/transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 using namespace glm;
+
+#include <tiny_obj_loader.h>
 
 #include "Program.h"
 #include "Camera.h"
@@ -156,8 +159,9 @@ int main() {
     Program lamp   { "Light",  "shd/light.vert",  "shd/light.frag"  };
 
     /* Load data */
-    auto cube = Cube();
-    cube.model = scale(vec3(2.0f));
+//    auto cube = Cube();
+    auto cube = Object { "res/dragon.obj" };
+    cube.model = scale(vec3(1.0f));
 
     Material mat {
             vec3 { 1.0f, 0.5f, 0.3f },

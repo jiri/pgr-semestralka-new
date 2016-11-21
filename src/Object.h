@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <string>
 using namespace std;
 
 #include <glm/glm.hpp>
@@ -31,6 +32,7 @@ public:
 
     Object();
     Object(const vector<GLfloat> &vertices, const vector<GLuint> &indices);
+    Object(const string &filename);
     virtual ~Object();
 
     void loadData(const vector<GLfloat> &vertices, const vector<GLuint> &indices);

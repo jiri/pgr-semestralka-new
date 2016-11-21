@@ -47,6 +47,7 @@ target_include_directories(
         # ${GLFW_INCLUDE_DIRS}
         ${GLM_INCLUDE_DIRS}
         ${Boost_INCLUDE_DIRS}
+        tinyobjloader/
 )
 
 target_link_libraries(

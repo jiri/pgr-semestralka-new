@@ -1,6 +1,11 @@
 #include "Object.h"
 
+#include <iostream>
+using namespace std;
+
 #include <imgui.h>
+#include <tiny_obj_loader.h>
+#include <GLFW/glfw3.h>
 
 namespace {
     GLuint glGenVertexArray() {
@@ -21,6 +26,11 @@ namespace {
 
     void glDeleteBuffer(GLuint id) {
         glDeleteBuffers(1, &id);
+    }
+
+    template <typename T>
+    GLvoid * offset(GLint i) {
+        return (GLvoid *) (i * sizeof(T));
     }
 }
 
@@ -63,8 +73,11 @@ Object::Object()
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), nullptr);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), offset<GLfloat>(0));
     glEnableVertexAttribArray(0);
+
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), offset<GLfloat>(3));
+    glEnableVertexAttribArray(1);
 
     glBindVertexArray(0);
 }
@@ -72,6 +85,44 @@ Object::Object()
 Object::Object(const vector<GLfloat> &vertices, const vector<GLuint> &indices)
     : Object()
 {
+    loadData(vertices, indices);
+}
+
+Object::Object(const string &filename)
+    : Object()
+{
+    tinyobj::attrib_t attrib;
+    vector<tinyobj::shape_t> shapes;
+    vector<tinyobj::material_t> materials;
+    string err;
+
+    bool ret = tinyobj::LoadObj(&attrib, &shapes, &materials, &err, filename.c_str());
+
+    if (!err.empty()) {
+        cerr << err << endl;
+    }
+
+    if (!ret) {
+        throw "Failed to open file";
+    }
+
+    vector<GLfloat> vertices;
+    vector<GLuint> indices;
+
+    for (const auto &shape : shapes) {
+        for (const auto &index : shape.mesh.indices) {
+            vertices.push_back(attrib.vertices[3 * index.vertex_index + 0]);
+            vertices.push_back(attrib.vertices[3 * index.vertex_index + 1]);
+            vertices.push_back(attrib.vertices[3 * index.vertex_index + 2]);
+
+            vertices.push_back(attrib.normals[3 * index.normal_index + 0]);
+            vertices.push_back(attrib.normals[3 * index.normal_index + 1]);
+            vertices.push_back(attrib.normals[3 * index.normal_index + 2]);
+
+            indices.push_back(indices.size());
+        }
+    }
+
     loadData(vertices, indices);
 }
 
