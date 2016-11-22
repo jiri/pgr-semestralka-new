@@ -86,23 +86,6 @@ void pos_callback(GLFWwindow *w, double x, double y) {
     }
 }
 
-void my_terminate() {
-    try {
-        auto e = current_exception();
-        rethrow_exception(e);
-    } catch (compilation_error &e) {
-        cout << e.infoLog << endl;
-    } catch (link_error &e) {
-        cout << e.infoLog << endl;
-    } catch (exception &e) {
-        cout << e.what() << endl;
-    } catch (...) {
-        /* ... */
-    }
-
-    exit(EXIT_FAILURE);
-}
-
 int main() {
     /* Create a window */
     glfwSetErrorCallback(error_callback);
@@ -155,8 +138,8 @@ int main() {
     glEnable(GL_CULL_FACE);
 
     /* Load shaders */
-    Program phong  { "Phong",  "shd/phong.vert",  "shd/phong.frag"  };
-    Program lamp   { "Light",  "shd/light.vert",  "shd/light.frag"  };
+    Program phong  { "Phong", "shd/phong.vert",  "shd/phong.frag"  };
+    Program lamp   { "Light", "shd/light.vert",  "shd/light.frag"  };
 
     /* Load data */
     auto cube = Model { "res/cube.obj" };
