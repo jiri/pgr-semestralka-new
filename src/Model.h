@@ -12,7 +12,7 @@ using namespace glm;
 
 #include "Program.h"
 
-class Object {
+class Model {
 public:
     GLuint vao;
     GLuint vbo, ebo;
@@ -24,16 +24,16 @@ public:
     mat4 model;
 
 public:
-    Object(const Object &other) = delete;
-    Object& operator=(const Object &other) = delete;
+    Model(const Model &other) = delete;
+    Model& operator=(const Model &other) = delete;
 
-    Object(Object &&other);
-    Object& operator=(Object &&other);
+    Model(Model &&other);
+    Model& operator=(Model &&other);
 
-    Object();
-    Object(const vector<GLfloat> &vertices, const vector<GLuint> &indices);
-    Object(const string &filename);
-    virtual ~Object();
+    Model();
+    Model(const vector<GLfloat> &vertices, const vector<GLuint> &indices);
+    Model(const string &filename);
+    virtual ~Model();
 
     void loadData(const vector<GLfloat> &vertices, const vector<GLuint> &indices);
     void draw(Program &program) const;

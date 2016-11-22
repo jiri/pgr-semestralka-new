@@ -21,7 +21,7 @@ using namespace glm;
 
 #include "Program.h"
 #include "Camera.h"
-#include "Object.h"
+#include "Model.h"
 #include "Light.h"
 #include "Material.h"
 
@@ -159,7 +159,7 @@ int main() {
     Program lamp   { "Light",  "shd/light.vert",  "shd/light.frag"  };
 
     /* Load data */
-    auto cube = Object { "res/cube.obj" };
+    auto cube = Model { "res/cube.obj" };
     cube.model = scale(vec3(1.0f));
 
     auto mat = Material {

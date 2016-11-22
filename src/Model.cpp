@@ -1,4 +1,4 @@
-#include "Object.h"
+#include "Model.h"
 
 #include <iostream>
 using namespace std;
@@ -34,7 +34,7 @@ namespace {
     }
 }
 
-Object::Object(Object &&other) {
+Model::Model(Model &&other) {
     vao = other.vao;
     vbo = other.vbo;
     ebo = other.ebo;
@@ -44,7 +44,7 @@ Object::Object(Object &&other) {
     other.ebo = 0;
 }
 
-Object& Object::operator=(Object &&other) {
+Model& Model::operator=(Model &&other) {
     glDeleteVertexArray(vao);
     glDeleteBuffer(vbo);
     glDeleteBuffer(ebo);
@@ -60,7 +60,7 @@ Object& Object::operator=(Object &&other) {
     return *this;
 }
 
-Object::Object()
+Model::Model()
     : vao { glGenVertexArray() }
     , vbo { glGenBuffer() }
     , ebo { glGenBuffer() }
@@ -82,14 +82,14 @@ Object::Object()
     glBindVertexArray(0);
 }
 
-Object::Object(const vector<GLfloat> &vertices, const vector<GLuint> &indices)
-    : Object()
+Model::Model(const vector<GLfloat> &vertices, const vector<GLuint> &indices)
+    : Model()
 {
     loadData(vertices, indices);
 }
 
-Object::Object(const string &filename)
-    : Object()
+Model::Model(const string &filename)
+    : Model()
 {
     tinyobj::attrib_t attrib;
     vector<tinyobj::shape_t> shapes;
@@ -126,13 +126,13 @@ Object::Object(const string &filename)
     loadData(vertices, indices);
 }
 
-Object::~Object() {
+Model::~Model() {
     glDeleteVertexArray(vao);
     glDeleteBuffer(vbo);
     glDeleteBuffer(ebo);
 }
 
-void Object::loadData(const vector<GLfloat> &vertices, const vector<GLuint> &indices) {
+void Model::loadData(const vector<GLfloat> &vertices, const vector<GLuint> &indices) {
     numIndices = static_cast<GLuint>(indices.size());
 
     glBindVertexArray(vao);
@@ -143,7 +143,7 @@ void Object::loadData(const vector<GLfloat> &vertices, const vector<GLuint> &ind
     glBindVertexArray(0);
 }
 
-void Object::draw(Program &p) const {
+void Model::draw(Program &p) const {
     if (visible) {
         glBindVertexArray(vao);
 
@@ -160,6 +160,6 @@ void Object::draw(Program &p) const {
 //    }
 }
 
-//void Object::edit() {
+//void Model::edit() {
 //    ImGui::Checkbox("visible", &visible);
 //}
