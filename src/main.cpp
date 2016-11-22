@@ -158,24 +158,24 @@ int main() {
     Program lamp   { "Light",  "shd/light.vert",  "shd/light.frag"  };
 
     /* Load data */
-//    auto cube = Cube();
     auto cube = Object { "res/dragon.obj" };
     cube.model = scale(vec3(1.0f));
 
-    Material mat {
+    auto mat = Material {
             vec3 { 1.0f, 0.5f, 0.3f },
             vec3 { 1.0f, 0.5f, 0.3f },
             vec3 { 0.5f, 0.5f, 0.5f },
             32.0f,
     };
 
-    auto light = Light(vec3(1.0f, 1.0f, 1.0f));
-    light.model = translate(vec3(5.0f, 0.0f, 0.0f));
+    auto light = Light {
+            vec3 { 1.0f, 1.0f, 1.0f },
+    };
 
     /* Matrices */
     mat4 projection =  perspective(radians(65.0f), 4.0f/ 3.0f, 0.01f, 100.0f);
 
-    vec3 pos = vec3(4.0f, 0.0f, 0.0f);
+    vec3 pos = vec3 { 4.0f, 0.0f, 0.0f };
 
     while (!glfwWindowShouldClose(window)) {
         /* Handle input */
@@ -208,7 +208,7 @@ int main() {
         /* Manipulation */
         ImGui::SliderFloat3("Light position", value_ptr(pos), -10.0f, 10.0f);
 
-        light.model = translate(pos);
+        light.model = translate(pos) * scale(vec3 { 0.25f });
 
         /* Render */
         glClearColor(0.059f, 0.057f, 0.073f, 1.0f);

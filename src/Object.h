@@ -37,5 +37,4 @@ public:
 
     void loadData(const vector<GLfloat> &vertices, const vector<GLuint> &indices);
     void draw(Program &program) const;
-    // void edit();
 };
