@@ -1,3 +1,4 @@
+tinyobjloader/models/
 
 # Created by https://www.gitignore.io/api/intellij,c,cmake
 
@@ -61,7 +62,6 @@ fabric.properties
 # Object files
 *.o
 *.ko
-*.obj
 *.elf
 
 # Linker output

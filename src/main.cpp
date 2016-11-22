@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <memory>
 using namespace std;
 
 #define TINYOBJLOADER_IMPLEMENTATION
@@ -24,6 +25,7 @@ using namespace glm;
 #include "Model.h"
 #include "Light.h"
 #include "Material.h"
+#include "Texture.h"
 
 void error_callback(int /* error */, const char *message) {
     cerr << "GLFW error: " << message << endl;
@@ -141,9 +143,12 @@ int main() {
     Program phong  { "Phong", "shd/phong.vert",  "shd/phong.frag"  };
     Program lamp   { "Light", "shd/light.vert",  "shd/light.frag"  };
 
+    /* Textures */
+    Texture t { "res/chalet.jpg" };
+
     /* Load data */
-    auto cube = Model { "res/cube.obj" };
-    cube.model = scale(vec3(1.0f));
+    auto cube = Model { "res/chalet.obj" };
+    cube.model = scale(vec3(1.0f)) * rotate(radians(-90.0f), vec3(1.0f, 0.0f, 0.0f));
 
     auto mat = Material {
             vec3 { 0.247f, 0.199f, 0.075f },
@@ -212,6 +217,9 @@ int main() {
             phong.setUniform("material", mat);
             phong.setUniform("light", light);
             phong.setUniform("light.position", vec3(light.model * vec4(0.0f, 0.0f, 0.0f, 1.0f)));
+
+//            phong.setUniform("tex", t);
+            glBindTexture(GL_TEXTURE_2D, t);
 
             phong.setUniform("cameraPosition", as.camera.position);
 

@@ -73,11 +73,14 @@ Model::Model()
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), offset<GLfloat>(0));
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), offset<GLfloat>(0));
     glEnableVertexAttribArray(0);
 
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), offset<GLfloat>(3));
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), offset<GLfloat>(3));
     glEnableVertexAttribArray(1);
+
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), offset<GLfloat>(6));
+    glEnableVertexAttribArray(2);
 
     glBindVertexArray(0);
 }
@@ -111,13 +114,33 @@ Model::Model(const string &filename)
 
     for (const auto &shape : shapes) {
         for (const auto &index : shape.mesh.indices) {
-            vertices.push_back(attrib.vertices[3 * index.vertex_index + 0]);
-            vertices.push_back(attrib.vertices[3 * index.vertex_index + 1]);
-            vertices.push_back(attrib.vertices[3 * index.vertex_index + 2]);
+            if (!attrib.vertices.empty()) {
+                vertices.push_back(attrib.vertices[3 * index.vertex_index + 0]);
+                vertices.push_back(attrib.vertices[3 * index.vertex_index + 1]);
+                vertices.push_back(attrib.vertices[3 * index.vertex_index + 2]);
+            } else {
+                vertices.push_back(0.0f);
+                vertices.push_back(0.0f);
+                vertices.push_back(0.0f);
+            }
 
-            vertices.push_back(attrib.normals[3 * index.normal_index + 0]);
-            vertices.push_back(attrib.normals[3 * index.normal_index + 1]);
-            vertices.push_back(attrib.normals[3 * index.normal_index + 2]);
+            if (!attrib.normals.empty()) {
+                vertices.push_back(attrib.normals[3 * index.normal_index + 0]);
+                vertices.push_back(attrib.normals[3 * index.normal_index + 1]);
+                vertices.push_back(attrib.normals[3 * index.normal_index + 2]);
+            } else {
+                vertices.push_back(0.0f);
+                vertices.push_back(0.0f);
+                vertices.push_back(0.0f);
+            }
+
+            if (!attrib.texcoords.empty()) {
+                vertices.push_back(attrib.texcoords[2 * index.texcoord_index + 0]);
+                vertices.push_back(attrib.texcoords[2 * index.texcoord_index + 1]);
+            } else {
+                vertices.push_back(0.0f);
+                vertices.push_back(0.0f);
+            }
 
             indices.push_back(indices.size());
         }
@@ -144,22 +167,10 @@ void Model::loadData(const vector<GLfloat> &vertices, const vector<GLuint> &indi
 }
 
 void Model::draw(Program &p) const {
-    if (visible) {
-        glBindVertexArray(vao);
+    glBindVertexArray(vao);
 
-        auto loc = glGetUniformLocation(p, "model");
-        glUniformMatrix4fv(loc, 1, GL_FALSE, value_ptr(model));
+    p.setUniform("model", model);
+    glDrawElements(GL_TRIANGLES, numIndices, GL_UNSIGNED_INT, nullptr);
 
-        glDrawElements(GL_TRIANGLES, numIndices, GL_UNSIGNED_INT, nullptr);
-
-        glBindVertexArray(0);
-    }
-
-//    for (auto &child : children) {
-//        child->draw(p);
-//    }
+    glBindVertexArray(0);
 }
-
-//void Model::edit() {
-//    ImGui::Checkbox("visible", &visible);
-//}

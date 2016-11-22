@@ -20,8 +20,11 @@ uniform Light light;
 
 uniform vec3 cameraPosition;
 
+uniform sampler2D tex;
+
 in vec3 vPosition;
 in vec3 vNormal;
+in vec2 vUV;
 
 out vec4 color;
 
@@ -44,5 +47,6 @@ void main() {
     vec3 specular = spec * material.specular * light.specular;
 
     /* Output */
-	color = vec4(ambient + diffuse + specular, 1.0);
+//	color = vec4(ambient + diffuse + specular, 1.0);
+    color = texture(tex, vUV);
 }
