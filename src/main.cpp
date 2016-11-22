@@ -22,7 +22,6 @@ using namespace glm;
 #include "Program.h"
 #include "Camera.h"
 #include "Object.h"
-#include "Cube.h"
 #include "Light.h"
 #include "Material.h"
 
