@@ -2,6 +2,7 @@
 
 #include <stdexcept>
 #include <string>
+#include <typeinfo>
 using namespace std;
 
 #include <GL/glew.h>
