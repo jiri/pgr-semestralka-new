@@ -152,28 +152,29 @@ int main() {
     }
 
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE);
 
     /* Load shaders */
     Program phong  { "Phong",  "shd/phong.vert",  "shd/phong.frag"  };
     Program lamp   { "Light",  "shd/light.vert",  "shd/light.frag"  };
 
     /* Load data */
-    auto cube = Object { "res/dragon.obj" };
+    auto cube = Object { "res/cube.obj" };
     cube.model = scale(vec3(1.0f));
 
     auto mat = Material {
-            vec3 { 1.0f, 0.5f, 0.3f },
-            vec3 { 1.0f, 0.5f, 0.3f },
-            vec3 { 0.5f, 0.5f, 0.5f },
-            32.0f,
+            vec3 { 0.247f, 0.199f, 0.075f },
+            vec3 { 0.752f, 0.606f, 0.226f },
+            vec3 { 0.628f, 0.556f, 0.366f },
+            0.4f * 128.0f,
     };
 
     auto light = Light {
-            vec3 { 1.0f, 1.0f, 1.0f },
+            vec3 { 1.0f, 1.0f, 0.7f },
     };
 
     /* Matrices */
-    mat4 projection =  perspective(radians(65.0f), 4.0f/ 3.0f, 0.01f, 100.0f);
+    mat4 projection = perspective(radians(65.0f), 4.0f/ 3.0f, 0.01f, 100.0f);
 
     vec3 pos = vec3 { 4.0f, 0.0f, 0.0f };
 
@@ -192,21 +193,28 @@ int main() {
                 as.camera.position -= cameraSpeed * as.camera.front();
             }
             if (as.keys[GLFW_KEY_A]) {
-                as.camera.position -= as.camera.right() * cameraSpeed;
+                as.camera.position -= cameraSpeed * as.camera.right();
             }
             if (as.keys[GLFW_KEY_D]) {
-                as.camera.position += as.camera.right() * cameraSpeed;
+                as.camera.position += cameraSpeed * as.camera.right();
             }
             if (as.keys[GLFW_KEY_LEFT_SHIFT]) {
-                as.camera.position -= as.camera.up * cameraSpeed;
+                as.camera.position -= cameraSpeed * as.camera.up;
             }
             if (as.keys[GLFW_KEY_SPACE]) {
-                as.camera.position += as.camera.up * cameraSpeed;
+                as.camera.position += cameraSpeed * as.camera.up;
             }
         }
 
+        /* FPS counter */
+        ImGui::Begin("", nullptr, ImVec2 { 0.0f, 0.0f }, 0.0f, ImGuiWindowFlags_NoTitleBar|ImGuiWindowFlags_NoResize|ImGuiWindowFlags_NoMove|ImGuiWindowFlags_NoScrollbar|ImGuiWindowFlags_NoSavedSettings|ImGuiWindowFlags_NoInputs);
+            ImGui::Text("%.1f FPS", ImGui::GetIO().Framerate);
+        ImGui::End();
+
         /* Manipulation */
-        ImGui::SliderFloat3("Light position", value_ptr(pos), -10.0f, 10.0f);
+        ImGui::Begin("Editor");
+            ImGui::SliderFloat3("Light position", value_ptr(pos), -10.0f, 10.0f);
+        ImGui::End();
 
         light.model = translate(pos) * scale(vec3 { 0.25f });
 
