@@ -9,8 +9,10 @@ struct Light {
 
 uniform Light light;
 
+in vec3 vPosition;
+
 out vec4 color;
 
 void main() {
-	color = vec4(light.specular, 1.0);
+	color = vec4(light.specular, 1.0) * (1.8 - pow(length(vPosition), 4));
 }
