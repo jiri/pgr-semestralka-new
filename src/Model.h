@@ -11,6 +11,7 @@ using namespace glm;
 #include <GL/glew.h>
 
 #include "Program.h"
+#include "Material.h"
 
 class Model {
 protected:
@@ -35,5 +36,6 @@ public:
 
     void draw(Program &program) const;
 
+    Material material;
     mat4 model;
 };

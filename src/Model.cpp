@@ -1,4 +1,5 @@
 #include "Model.h"
+#include "Material.h"
 
 #include <iostream>
 using namespace std;
@@ -43,6 +44,7 @@ Model::Model()
     , ebo { glGenBuffer() }
     , numIndices { 0 }
     , model { 1.0f }
+    , material { vec3 { 0.0f }, vec3 { 0.0f }, vec3 { 0.0f }, 0.0f }
 {
     glBindVertexArray(vao);
 
@@ -114,6 +116,17 @@ Model::Model(const string &filename)
             }
 
             indices.push_back(indices.size());
+        }
+
+        if (!materials.empty()) {
+            auto m = materials[0];
+
+            material = Material {
+                    make_vec3(m.ambient),
+                    make_vec3(m.diffuse),
+                    make_vec3(m.specular),
+                    m.shininess,
+            };
         }
     }
 
