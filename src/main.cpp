@@ -150,12 +150,12 @@ int main() {
     auto cube = Model { "res/cube.obj" };
     cube.model = scale(vec3(1.0f)) * rotate(radians(-90.0f), vec3(1.0f, 0.0f, 0.0f));
 
-    auto mat = Material {
-            vec3 { 0.247f, 0.199f, 0.075f },
-            vec3 { 0.752f, 0.606f, 0.226f },
-            vec3 { 0.628f, 0.556f, 0.366f },
-            0.4f * 128.0f,
-    };
+//    auto mat = Material {
+//            vec3 { 0.247f, 0.199f, 0.075f },
+//            vec3 { 0.752f, 0.606f, 0.226f },
+//            vec3 { 0.628f, 0.556f, 0.366f },
+//            0.4f * 128.0f,
+//    };
 
     auto light = Light {
             vec3 { 1.0f, 1.0f, 0.7f },
@@ -214,7 +214,7 @@ int main() {
             phong.setUniform("projection", projection);
             phong.setUniform("view", as.camera.viewMatrix());
 
-            phong.setUniform("material", mat);
+            phong.setUniform("material", cube.material);
             phong.setUniform("light", light);
             phong.setUniform("light.position", vec3(light.model * vec4(0.0f, 0.0f, 0.0f, 1.0f)));
 
