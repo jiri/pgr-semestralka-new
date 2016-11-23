@@ -44,7 +44,7 @@ Model::Model()
     , ebo { glGenBuffer() }
     , numIndices { 0 }
     , model { 1.0f }
-    , material { vec3 { 0.0f }, vec3 { 0.0f }, vec3 { 0.0f }, 0.0f }
+//    , material { vec3 { 0.0f }, vec3 { 0.0f }, vec3 { 0.0f }, 0.0f }
 {
     glBindVertexArray(vao);
 
@@ -121,12 +121,9 @@ Model::Model(const string &filename)
         if (!materials.empty()) {
             auto m = materials[0];
 
-            material = Material {
-                    make_vec3(m.ambient),
-                    make_vec3(m.diffuse),
-                    make_vec3(m.specular),
-                    m.shininess,
-            };
+            material.diffuse   = std::move(Texture { (mtl_base / path(m.diffuse_texname)).string(), 1 });
+            material.specular  = std::move(Texture { (mtl_base / path(m.specular_texname)).string(), 2 });
+            material.shininess = m.shininess;
         }
     }
 

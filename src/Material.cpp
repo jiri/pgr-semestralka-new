@@ -9,3 +9,10 @@ void Program::setUniform(string name, const Material &m) {
     setUniform(name + ".specular",  m.specular);
     setUniform(name + ".shininess", m.shininess);
 }
+
+template <>
+void Program::setUniform(string name, const TexturedMaterial &m) {
+    setUniform(name + ".diffuse",   m.diffuse);
+    setUniform(name + ".specular",  m.specular);
+    setUniform(name + ".shininess", m.shininess);
+}
