@@ -1,5 +1,7 @@
 #version 330 core
 
+uniform mat4 view;
+
 struct Light {
     vec3 ambient;
     vec3 diffuse;
@@ -9,10 +11,14 @@ struct Light {
 
 uniform Light light;
 
+uniform vec3 cameraPosition;
+
 in vec3 vPosition;
+in vec3 vNormal;
 
 out vec4 color;
 
 void main() {
-	color = vec4(light.specular, 1.0) * (1.8 - pow(length(vPosition), 4));
+    float diff = max(dot(vNormal, normalize(cameraPosition - light.position)), 0.0);
+	color = vec4(diff * light.specular, 1.0);
 }

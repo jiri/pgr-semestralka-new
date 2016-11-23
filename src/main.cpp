@@ -229,7 +229,10 @@ int main() {
             lamp.setUniform("projection", projection);
             lamp.setUniform("view", as.camera.viewMatrix());
 
+            lamp.setUniform("cameraPosition", as.camera.position);
+
             lamp.setUniform("light", light);
+            lamp.setUniform("light.position", vec3(light.model * vec4(0.0f, 0.0f, 0.0f, 1.0f)));
 
             light.draw(lamp);
         glUseProgram(0);
