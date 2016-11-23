@@ -118,6 +118,18 @@ Model::Model(const string &filename)
             indices.push_back(indices.size());
         }
 
+        if (attrib.vertices.empty()) {
+            cerr << "Warning: Model doesn't contain any vertices" << endl;
+        }
+
+        if (attrib.normals.empty()) {
+            cerr << "Warning: Model doesn't contain any normals" << endl;
+        }
+
+        if (attrib.texcoords.empty()) {
+            cerr << "Warning: Model doesn't contain any texCoords" << endl;
+        }
+
         if (!materials.empty()) {
             auto m = materials[0];
 
