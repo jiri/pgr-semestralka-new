@@ -1,21 +1,12 @@
 #version 330 core
 
 struct Material {
-    vec3 ambient;
-    vec3 diffuse;
-    vec3 specular;
-    float shininess;
-};
-
-//uniform Material material;
-
-struct TexturedMaterial {
     sampler2D diffuse;
     sampler2D specular;
     float shininess;
 };
 
-uniform TexturedMaterial material;
+uniform Material material;
 
 struct Light {
     vec3 ambient;

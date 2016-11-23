@@ -36,6 +36,6 @@ public:
 
     void draw(Program &program) const;
 
-    TexturedMaterial material;
+    Material material;
     mat4 model;
 };
