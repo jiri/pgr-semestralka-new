@@ -3,6 +3,9 @@
 #include <iostream>
 using namespace std;
 
+#include <boost/filesystem.hpp>
+using namespace boost::filesystem;
+
 #include <tiny_obj_loader.h>
 
 namespace {
@@ -66,7 +69,8 @@ Model::Model(const string &filename)
     vector<tinyobj::material_t> materials;
     string err;
 
-    bool ret = tinyobj::LoadObj(&attrib, &shapes, &materials, &err, filename.c_str());
+    auto mtl_base = path(filename).parent_path() / "/";
+    bool ret = tinyobj::LoadObj(&attrib, &shapes, &materials, &err, filename.c_str(), mtl_base.c_str());
 
     if (!err.empty()) {
         cerr << err << endl;
