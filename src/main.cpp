@@ -94,13 +94,13 @@ int main() {
 
     glfwInit();
 
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR,   3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR,   3);
-    glfwWindowHint(GLFW_OPENGL_PROFILE,          GLFW_OPENGL_CORE_PROFILE);
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT,   GL_TRUE);
-    glfwWindowHint(GLFW_RESIZABLE,               GL_FALSE);
-    glfwWindowHint(GLFW_FOCUSED,                 GL_TRUE);
-    glfwWindowHint(GLFW_SAMPLES,                 2);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_OPENGL_PROFILE,        GLFW_OPENGL_CORE_PROFILE);
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+    glfwWindowHint(GLFW_RESIZABLE,             GL_FALSE);
+    glfwWindowHint(GLFW_FOCUSED,               GL_TRUE);
+    glfwWindowHint(GLFW_SAMPLES,               2);
 
     auto window = glfwCreateWindow(800, 600, "", nullptr, nullptr);
 
@@ -113,10 +113,10 @@ int main() {
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
     /* Initialize AppState */
-    AppState as {
-            .camera = { vec3(0.0f, 3.0f, 3.0f), vec3(0.0f, 0.0f, 0.0f) },
-            .keys   = { GL_FALSE },
-            .cameraActive = GL_TRUE,
+    auto as = AppState {
+        .camera = { vec3(0.0f, 3.0f, 3.0f), vec3(0.0f, 0.0f, 0.0f) },
+        .keys   = { GL_FALSE },
+        .cameraActive = GL_TRUE,
     };
 
     glfwSetWindowUserPointer(window, &as);
@@ -218,7 +218,6 @@ int main() {
             phong.setUniform("light", light);
             phong.setUniform("light.position", vec3(light.model * vec4(0.0f, 0.0f, 0.0f, 1.0f)));
 
-//            phong.setUniform("tex", t);
             glBindTexture(GL_TEXTURE_2D, t);
 
             phong.setUniform("cameraPosition", as.camera.position);
@@ -235,9 +234,9 @@ int main() {
             light.draw(lamp);
         glUseProgram(0);
 
-        ImGui::Render();
-
         /* Present */
+        ImGui::Render();
+        
         glfwSwapBuffers(window);
     }
 
