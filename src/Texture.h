@@ -15,7 +15,7 @@ private:
     int w, h;
 
 public:
-    Texture(const string &path);
+    Texture(const string &path, GLenum interpolation = GL_NEAREST);
     ~Texture();
 
     operator GLuint() {

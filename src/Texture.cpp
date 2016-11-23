@@ -2,7 +2,7 @@
 
 #include <SOIL.h>
 
-Texture::Texture(const string &path) {
+Texture::Texture(const string &path, GLenum interpolation) {
     unique_ptr<unsigned char, decltype(&SOIL_free_image_data)> data {
             SOIL_load_image(path.c_str(), &w, &h, 0, SOIL_LOAD_RGB),
             SOIL_free_image_data,
@@ -11,8 +11,13 @@ Texture::Texture(const string &path) {
     glGenTextures(1, &id);
 
     glBindTexture(GL_TEXTURE_2D, id);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, interpolation);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, interpolation);
+
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, data.get());
     glGenerateMipmap(GL_TEXTURE_2D);
+
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
