@@ -144,10 +144,10 @@ int main() {
     Program lamp   { "Light", "shd/light.vert",  "shd/light.frag"  };
 
     /* Textures */
-    Texture t { "res/chalet.jpg" };
+    Texture t { "res/default.png" };
 
     /* Load data */
-    auto cube = Model { "res/chalet.obj" };
+    auto cube = Model { "res/cube.obj" };
     cube.model = scale(vec3(1.0f)) * rotate(radians(-90.0f), vec3(1.0f, 0.0f, 0.0f));
 
     auto mat = Material {
@@ -236,7 +236,7 @@ int main() {
 
         /* Present */
         ImGui::Render();
-        
+
         glfwSwapBuffers(window);
     }
 
