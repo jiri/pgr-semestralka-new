@@ -3,11 +3,11 @@
 #include <iostream>
 using namespace std;
 
-#include <imgui.h>
 #include <tiny_obj_loader.h>
-#include <GLFW/glfw3.h>
 
 namespace {
+    /* TODO: Move this to a separate header? */
+
     GLuint glGenVertexArray() {
         GLuint id;
         glGenVertexArrays(1, &id);
@@ -34,38 +34,11 @@ namespace {
     }
 }
 
-Model::Model(Model &&other) {
-    vao = other.vao;
-    vbo = other.vbo;
-    ebo = other.ebo;
-
-    other.vao = 0;
-    other.vbo = 0;
-    other.ebo = 0;
-}
-
-Model& Model::operator=(Model &&other) {
-    glDeleteVertexArray(vao);
-    glDeleteBuffer(vbo);
-    glDeleteBuffer(ebo);
-
-    vao = other.vao;
-    vbo = other.vbo;
-    ebo = other.ebo;
-
-    other.vao = 0;
-    other.vbo = 0;
-    other.ebo = 0;
-
-    return *this;
-}
-
 Model::Model()
     : vao { glGenVertexArray() }
     , vbo { glGenBuffer() }
     , ebo { glGenBuffer() }
     , numIndices { 0 }
-    , visible { GL_TRUE }
     , model { 1.0f }
 {
     glBindVertexArray(vao);
@@ -83,12 +56,6 @@ Model::Model()
     glEnableVertexAttribArray(2);
 
     glBindVertexArray(0);
-}
-
-Model::Model(const vector<GLfloat> &vertices, const vector<GLuint> &indices)
-    : Model()
-{
-    loadData(vertices, indices);
 }
 
 Model::Model(const string &filename)
@@ -147,6 +114,32 @@ Model::Model(const string &filename)
     }
 
     loadData(vertices, indices);
+}
+
+Model::Model(Model &&other) {
+    vao = other.vao;
+    vbo = other.vbo;
+    ebo = other.ebo;
+
+    other.vao = 0;
+    other.vbo = 0;
+    other.ebo = 0;
+}
+
+Model& Model::operator=(Model &&other) {
+    glDeleteVertexArray(vao);
+    glDeleteBuffer(vbo);
+    glDeleteBuffer(ebo);
+
+    vao = other.vao;
+    vbo = other.vbo;
+    ebo = other.ebo;
+
+    other.vao = 0;
+    other.vbo = 0;
+    other.ebo = 0;
+
+    return *this;
 }
 
 Model::~Model() {
