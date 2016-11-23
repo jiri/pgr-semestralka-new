@@ -1,8 +1,6 @@
 #include "Model.h"
-#include "Material.h"
 
-#include <iostream>
-using namespace std;
+#include <fmt/format.h>
 
 #include <boost/filesystem.hpp>
 using namespace boost::filesystem;
@@ -44,7 +42,6 @@ Model::Model()
     , ebo { glGenBuffer() }
     , numIndices { 0 }
     , model { 1.0f }
-//    , material { vec3 { 0.0f }, vec3 { 0.0f }, vec3 { 0.0f }, 0.0f }
 {
     glBindVertexArray(vao);
 
@@ -119,15 +116,15 @@ Model::Model(const string &filename)
         }
 
         if (attrib.vertices.empty()) {
-            cerr << "Warning: Model doesn't contain any vertices" << endl;
+            fmt::print(stderr, "Warning: Model doesn't contain any vertices\n");
         }
 
         if (attrib.normals.empty()) {
-            cerr << "Warning: Model doesn't contain any normals" << endl;
+            fmt::print(stderr, "Warning: Model doesn't contain any normals\n");
         }
 
         if (attrib.texcoords.empty()) {
-            cerr << "Warning: Model doesn't contain any texCoords" << endl;
+            fmt::print(stderr, "Warning: Model doesn't contain any texCoords\n");
         }
 
         if (!materials.empty()) {

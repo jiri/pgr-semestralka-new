@@ -9,6 +9,7 @@ find_package(GLEW   REQUIRED STATIC)
 find_package(glfw3  REQUIRED)
 find_package(glm    REQUIRED)
 find_package(Boost  REQUIRED COMPONENTS system filesystem)
+find_package(fmt    REQUIRED)
 
 # Add ImGui
 add_library(
@@ -47,6 +48,7 @@ target_include_directories(
         # ${GLFW_INCLUDE_DIRS}
         ${GLM_INCLUDE_DIRS}
         ${Boost_INCLUDE_DIRS}
+        ${fmt_INCLUDE_DIRS}
         tinyobjloader/
 )
 
@@ -57,6 +59,7 @@ target_link_libraries(
         glfw
         ${GLM_LIBRARIES}
         ${Boost_LIBRARIES}
+        fmt
         imgui
         soil
 )
