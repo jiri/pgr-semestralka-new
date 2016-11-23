@@ -1,4 +1,7 @@
 tinyobjloader/models/
+res/chalet.obj
+res/chalet.jpg
+res/dragon.obj
 
 # Created by https://www.gitignore.io/api/intellij,c,cmake
 
