@@ -1,4 +1,5 @@
 #include <iostream>
+#include <array>
 using namespace std;
 
 #define TINYOBJLOADER_IMPLEMENTATION
@@ -33,7 +34,7 @@ void error_callback(int /* error */, const char *message) {
 
 struct AppState {
     Camera camera;
-    bool keys[1024];
+    array<bool, 1024> keys;
     bool cameraActive;
 };
 
@@ -113,7 +114,7 @@ int main() {
     /* Initialize AppState */
     auto as = AppState {
         .camera = { vec3(0.0f, 3.0f, 3.0f), vec3(0.0f, 0.0f, 0.0f) },
-        .keys   = { GL_FALSE },
+        .keys = { GL_FALSE },
         .cameraActive = GL_TRUE,
     };
 
@@ -162,27 +163,8 @@ int main() {
         glfwPollEvents();
         ImGui_ImplGlfwGL3_NewFrame();
 
-        GLfloat cameraSpeed = 0.1f;
-
         if (as.cameraActive) {
-            if (as.keys[GLFW_KEY_W]) {
-                as.camera.position += cameraSpeed * as.camera.front();
-            }
-            if (as.keys[GLFW_KEY_S]) {
-                as.camera.position -= cameraSpeed * as.camera.front();
-            }
-            if (as.keys[GLFW_KEY_A]) {
-                as.camera.position -= cameraSpeed * as.camera.right();
-            }
-            if (as.keys[GLFW_KEY_D]) {
-                as.camera.position += cameraSpeed * as.camera.right();
-            }
-            if (as.keys[GLFW_KEY_LEFT_SHIFT]) {
-                as.camera.position -= cameraSpeed * as.camera.up;
-            }
-            if (as.keys[GLFW_KEY_SPACE]) {
-                as.camera.position += cameraSpeed * as.camera.up;
-            }
+            as.camera.handleInput(as.keys);
         }
 
         /* FPS counter */
