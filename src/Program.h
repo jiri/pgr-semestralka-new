@@ -55,9 +55,5 @@ public:
     GLint location(string name) const;
 
     template<typename T>
-    void setUniform(string name, const T &val) {
-        throw domain_error {
-                "Program::setUniform not defined for " + string(typeid(T).name())
-        };
-    }
+    void setUniform(string name, const T &val);
 };
