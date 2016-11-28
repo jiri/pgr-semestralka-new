@@ -74,9 +74,8 @@ Shader::~Shader() {
 }
 
 /* Program implementation */
-Program::Program(string name, const Shader &vsh, const Shader &fsh)
+Program::Program(const Shader &vsh, const Shader &fsh)
     : GLObject { glCreateProgram() }
-    , name { name }
 {
     glAttachShader(id, vsh);
     glAttachShader(id, fsh);
@@ -94,7 +93,7 @@ Program::Program(string name, const Shader &vsh, const Shader &fsh)
         glGetProgramInfoLog(id, 512, nullptr, infoLog);
 
         throw link_error {
-                name, infoLog
+                infoLog
         };
     }
 }

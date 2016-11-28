@@ -137,8 +137,8 @@ int main() {
     glEnable(GL_CULL_FACE);
 
     /* Load shaders */
-    Program phong  { "Phong", "shd/phong.vert",  "shd/phong.frag"  };
-    Program lamp   { "Light", "shd/light.vert",  "shd/light.frag"  };
+    Program phong { "shd/phong.vert", "shd/phong.frag" };
+    Program lamp  { "shd/light.vert", "shd/light.frag" };
 
     /* Load data */
     auto cube = Model { "res/unicube.obj" };

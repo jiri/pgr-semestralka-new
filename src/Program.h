@@ -26,12 +26,10 @@ public:
 
 class link_error : public exception {
 public:
-    string name;
     string infoLog;
 
-    link_error(const string &name, const string &info)
-        : name { name }
-        , infoLog { info }
+    link_error(const string &info)
+        : infoLog { info }
     { }
 
     const char* what() {
@@ -60,9 +58,7 @@ private:
     };
 
 public:
-    const string name;
-
-    Program(string name, const Shader &vsh, const Shader &fsh);
+    Program(const Shader &vsh, const Shader &fsh);
     ~Program();
 
     GLint location(string name) const;
