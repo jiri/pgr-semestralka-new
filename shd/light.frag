@@ -19,6 +19,6 @@ in vec3 vNormal;
 out vec4 color;
 
 void main() {
-    float diff = max(dot(vNormal, normalize(cameraPosition - light.position)), 0.0);
+    float diff = max(dot(normalize(vNormal), normalize(cameraPosition - light.position)), 0.0);
 	color = vec4(diff * light.specular, 1.0);
 }
