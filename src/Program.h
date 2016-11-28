@@ -6,6 +6,7 @@
 using namespace std;
 
 #include <GL/glew.h>
+
 #include "GLObject.h"
 
 class compilation_error : public exception {
@@ -46,6 +47,18 @@ public:
 };
 
 class Program : public GLObject {
+private:
+    class ProgramHandle {
+    public:
+        ProgramHandle(GLuint id) {
+            glUseProgram(id);
+        }
+
+        ~ProgramHandle() {
+            glUseProgram(0);
+        }
+    };
+
 public:
     const string name;
 
@@ -56,4 +69,8 @@ public:
 
     template<typename T>
     void setUniform(string name, const T &val);
+
+    ProgramHandle use() {
+        return { id };
+    }
 };

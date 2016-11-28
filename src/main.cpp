@@ -178,7 +178,9 @@ int main() {
         glClearColor(0.059f, 0.057f, 0.073f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        glUseProgram(phong);
+        {
+            auto handle = phong.use();
+
             phong.setUniform("projection", projection);
             phong.setUniform("view", as.camera.viewMatrix());
 
@@ -190,9 +192,11 @@ int main() {
             phong.setUniform("material", cube.material);
 
             cube.draw(phong);
-        glUseProgram(0);
+        }
 
-        glUseProgram(lamp);
+        {
+            auto handle = lamp.use();
+
             lamp.setUniform("projection", projection);
             lamp.setUniform("view", as.camera.viewMatrix());
 
@@ -202,7 +206,7 @@ int main() {
             lamp.setUniform("cameraPosition", as.camera.position);
 
             light.draw(lamp);
-        glUseProgram(0);
+        }
 
         /* Present */
         ImGui::Render();
