@@ -23,8 +23,6 @@ using namespace glm;
 #include "Camera.h"
 #include "Model.h"
 #include "Light.h"
-#include "Material.h"
-#include "Texture.h"
 
 void error_callback(int /* error */, const char *message) {
     cerr << "GLFW error: " << message << endl;
@@ -142,15 +140,12 @@ int main() {
     Program phong  { "Phong", "shd/phong.vert",  "shd/phong.frag"  };
     Program lamp   { "Light", "shd/light.vert",  "shd/light.frag"  };
 
-    /* Textures */
-    Texture t { "res/container.png" };
-
     /* Load data */
     auto cube = Model { "res/unicube.obj" };
     cube.model = scale(vec3(1.0f)) * rotate(radians(-90.0f), vec3(1.0f, 0.0f, 0.0f));
 
     auto light = Light {
-            vec3 { 1.0f, 1.0f, 0.7f },
+        vec3 { 1.0f, 1.0f, 0.7f },
     };
 
     /* Matrices */
