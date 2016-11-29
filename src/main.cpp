@@ -164,7 +164,7 @@ int main() {
 
         /* FPS counter */
         ImGui::Begin("", nullptr, ImVec2 { 0.0f, 0.0f }, 0.0f, ImGuiWindowFlags_NoTitleBar|ImGuiWindowFlags_NoResize|ImGuiWindowFlags_NoMove|ImGuiWindowFlags_NoScrollbar|ImGuiWindowFlags_NoSavedSettings|ImGuiWindowFlags_NoInputs);
-            ImGui::Text("%.1f FPS", ImGui::GetIO().Framerate);
+            ImGui::Text("%.0f FPS", ImGui::GetIO().Framerate);
         ImGui::End();
 
         /* Manipulation */
