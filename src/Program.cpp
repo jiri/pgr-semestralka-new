@@ -2,44 +2,38 @@
 
 #include <iostream>
 #include <stdexcept>
+#include <fstream>
 using namespace std;
 
 #include <boost/filesystem.hpp>
-using namespace boost::filesystem;
+
+#include <fmt/format.h>
 
 namespace {
     GLenum guessTypeFromPath(string path) {
-        auto ex = extension(path);
+        auto ex = boost::filesystem::extension(path);
 
         if (ex == ".vert" || ex == ".vsh") { return GL_VERTEX_SHADER;   }
         if (ex == ".frag" || ex == ".fsh") { return GL_FRAGMENT_SHADER; }
 
         throw invalid_argument {
-            "Unrecognized shader file extension '" + ex + "'"
+            fmt::format("Unrecognized shader file extension '{}'", ex)
         };
     }
 
-    char* slurp_file(const char *path) {
-        char *buffer = nullptr;
-        uint32_t length;
+    string slurp_file(const string &path) {
+        ifstream file { path };
 
-        FILE *f = fopen(path, "rb");
-        if (f) {
-            /* Get file length */
-            fseek(f, 0, SEEK_END);
-            length = ftell(f);
-            fseek(f, 0, SEEK_SET);
-
-            /* Read data */
-            buffer = (char *) malloc(length + 1);
-            buffer[length] = 0;
-            if (buffer) {
-                fread (buffer, 1, length, f);
-            }
-            fclose (f);
+        if (!file.is_open()) {
+            throw std::runtime_error {
+                fmt::format("Failed to open file '{}'", path)
+            };
         }
 
-        return buffer;
+        return {
+            istreambuf_iterator<char> { file },
+            istreambuf_iterator<char> {      },
+        };
     }
 }
 
@@ -51,8 +45,10 @@ Shader::Shader(const char *path)
 Shader::Shader(string path, GLenum type)
     : GLObject { glCreateShader(type) }
 {
-    const char *src = slurp_file(path.c_str());
-    glShaderSource(id, 1, &src, nullptr);
+    const auto src = slurp_file(path);
+    const auto psrc = src.c_str();
+
+    glShaderSource(id, 1, &psrc, nullptr);
 
     glCompileShader(id);
 
