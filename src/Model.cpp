@@ -41,7 +41,6 @@ Model::Model()
     , vbo { glGenBuffer() }
     , ebo { glGenBuffer() }
     , numIndices { 0 }
-    , model { 1.0f }
 {
     glBindVertexArray(vao);
 
@@ -185,7 +184,6 @@ void Model::loadData(const vector<GLfloat> &vertices, const vector<GLuint> &indi
 void Model::draw(Program &p) const {
     glBindVertexArray(vao);
 
-    p.setUniform("model", model);
     glDrawElements(GL_TRIANGLES, numIndices, GL_UNSIGNED_INT, nullptr);
 
     glBindVertexArray(0);

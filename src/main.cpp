@@ -142,11 +142,12 @@ int main() {
 
     /* Load data */
     auto cube = Model { "res/unicube.obj" };
-    cube.model = scale(vec3(1.0f)) * rotate(radians(-90.0f), vec3(1.0f, 0.0f, 0.0f));
+    auto cubeModel = scale(vec3 { 1.0f }) * rotate(radians(-90.0f), vec3 { 1.0f, 0.0f, 0.0f });
 
     auto light = Light {
         vec3 { 1.0f, 1.0f, 0.7f },
     };
+    auto lightModel = mat4 { 1.0f };
 
     /* Matrices */
     mat4 projection = perspective(radians(65.0f), 4.0f/ 3.0f, 0.01f, 100.0f);
@@ -172,7 +173,7 @@ int main() {
             ImGui::SliderFloat3("Light position", value_ptr(pos), -10.0f, 10.0f);
         ImGui::End();
 
-        light.model = translate(pos) * scale(vec3 { 0.25f });
+        lightModel = translate(pos) * scale(vec3 { 0.25f });
 
         /* Render */
         glClearColor(0.059f, 0.057f, 0.073f, 1.0f);
@@ -183,9 +184,10 @@ int main() {
 
             phong.setUniform("projection", projection);
             phong.setUniform("view", as.camera.viewMatrix());
+            phong.setUniform("model", cubeModel);
 
             phong.setUniform("light", light);
-            phong.setUniform("light.position", vec3(light.model * vec4(0.0f, 0.0f, 0.0f, 1.0f)));
+            phong.setUniform("light.position", vec3(lightModel * vec4(0.0f, 0.0f, 0.0f, 1.0f)));
 
             phong.setUniform("cameraPosition", as.camera.position);
 
@@ -199,9 +201,10 @@ int main() {
 
             lamp.setUniform("projection", projection);
             lamp.setUniform("view", as.camera.viewMatrix());
+            lamp.setUniform("model", lightModel);
 
             lamp.setUniform("light", light);
-            lamp.setUniform("light.position", vec3(light.model * vec4(0.0f, 0.0f, 0.0f, 1.0f)));
+            lamp.setUniform("light.position", vec3(lightModel * vec4(0.0f, 0.0f, 0.0f, 1.0f)));
 
             lamp.setUniform("cameraPosition", as.camera.position);
 
