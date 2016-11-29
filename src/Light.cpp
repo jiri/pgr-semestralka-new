@@ -3,7 +3,7 @@
 #include "Program.h"
 
 Light::Light(const vec3 &c)
-    : Model { "res/bulb.obj" }
+    : Model { "res/bulb2.obj" }
     , ambient  { 0.2f * c }
     , diffuse  { 0.5f * c }
     , specular { 1.0f * c }
