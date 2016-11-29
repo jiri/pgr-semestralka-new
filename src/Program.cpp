@@ -59,6 +59,7 @@ Shader::Shader(string path, GLenum type)
         GLchar infoLog[512];
         glGetShaderInfoLog(id, 512, nullptr, infoLog);
 
+        /* TODO: Possible resource leak here */
         throw runtime_error {
             fmt::format("Compilation of shader '{}' failed:\n{}", path, infoLog)
         };
