@@ -63,8 +63,8 @@ Shader::Shader(string path, GLenum type)
         GLchar infoLog[512];
         glGetShaderInfoLog(id, 512, nullptr, infoLog);
 
-        throw compilation_error {
-            path, infoLog
+        throw runtime_error {
+            fmt::format("Compilation of shader '{}' failed:\n{}", path, infoLog)
         };
     }
 }
@@ -92,8 +92,8 @@ Program::Program(const Shader &vsh, const Shader &fsh)
         GLchar infoLog[512];
         glGetProgramInfoLog(id, 512, nullptr, infoLog);
 
-        throw link_error {
-                infoLog
+        throw runtime_error {
+            fmt::format("Program linking failed:\n{}", infoLog)
         };
     }
 }

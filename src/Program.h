@@ -1,6 +1,5 @@
 #pragma once
 
-#include <stdexcept>
 #include <string>
 #include <typeinfo>
 using namespace std;
@@ -8,34 +7,6 @@ using namespace std;
 #include <GL/glew.h>
 
 #include "GLObject.h"
-
-class compilation_error : public exception {
-public:
-    string path;
-    string infoLog;
-
-    compilation_error(const string &path, const string &info)
-        : path { path }
-        , infoLog { info }
-    { }
-
-    const char* what() {
-        return "Shader compilation failed";
-    }
-};
-
-class link_error : public exception {
-public:
-    string infoLog;
-
-    link_error(const string &info)
-        : infoLog { info }
-    { }
-
-    const char* what() {
-        return "Program linking failed";
-    }
-};
 
 class Shader : public GLObject {
 public:
