@@ -2,6 +2,8 @@
 #include <array>
 using namespace std;
 
+#include <gsl.h>
+
 #define TINYOBJLOADER_IMPLEMENTATION
 #define GLFW_INCLUDE_NONE
 #define GLEW_STATIC

@@ -2,6 +2,14 @@
 <module type="CPP_MODULE" version="4">
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/SOIL/src/stb_image_aug.c" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/SOIL/src/image_helper.c" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/SOIL/src/SOIL.c" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/SOIL/src/SOIL.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/SOIL/src/image_DXT.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/SOIL/src/stb_image_aug.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/SOIL/src/image_DXT.c" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/SOIL/src/image_helper.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/Material.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/Texture.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/GLObject.cpp" isTestSource="false" />
@@ -18,19 +26,11 @@
       <sourceFolder url="file://$MODULE_DIR$/src/GLObject.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/Camera.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/Model.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/SOIL/src/stb_image_aug.c" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/SOIL/src/image_helper.c" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/SOIL/src/SOIL.c" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/SOIL/src/SOIL.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/SOIL/src/image_DXT.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/SOIL/src/stb_image_aug.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/SOIL/src/image_DXT.c" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/SOIL/src/image_helper.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/CMakeLists.txt" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/imgui/src/imgui_draw.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/imgui/src/imgui.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/imgui/src/imgui_demo.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/imgui/src/imgui_impl_glfw_gl3.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CMakeLists.txt" isTestSource="false" />
     </content>
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module-library">

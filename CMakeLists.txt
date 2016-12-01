@@ -11,6 +11,11 @@ find_package(glm    REQUIRED)
 find_package(Boost  REQUIRED COMPONENTS system filesystem)
 find_package(fmt    REQUIRED)
 
+# Add GSL
+add_library(gsl INTERFACE)
+
+target_include_directories(gsl INTERFACE gsl-lite/include/)
+
 # Add ImGui
 add_library(
         imgui STATIC
@@ -62,6 +67,7 @@ target_link_libraries(
         fmt
         imgui
         soil
+        gsl
 )
 
 # Copy resources
