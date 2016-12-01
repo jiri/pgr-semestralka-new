@@ -3,11 +3,6 @@ newoption {
    description = "Build with zlib."
 }
 
-newoption {
-   trigger     = "with-zstd",
-   description = "Build with ZStandard compression."
-}
-
 solution "objview"
 	-- location ( "build" )
 	configurations { "Release", "Debug" }
@@ -26,15 +21,6 @@ solution "objview"
 	if _OPTIONS['with-zlib'] then
 		defines { 'ENABLE_ZLIB' }
 		links { 'z' }
-	end	
-
-	if _OPTIONS['with-zstd'] then
-		print("with-zstd")
-		defines { 'ENABLE_ZSTD' }
-		-- Set path to zstd installed dir.
-		includedirs { '$$HOME/local/include' }
-		libdirs { '$$HOME/local/lib' }
-		links { 'zstd' }
 	end	
 
 	-- Uncomment if you want address sanitizer(gcc/clang only)

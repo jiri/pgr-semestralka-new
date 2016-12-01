@@ -184,48 +184,6 @@ TestLoadObj(
   return true;
 }
 
-static bool
-TestLoadObjFromPreopenedFile(
-  const char* filename,
-  const char* basepath = NULL,
-  bool readMaterials = true,
-  bool triangulate = true)
-{
-  std::string fullFilename = std::string(basepath) + filename;
-  std::cout << "Loading " << fullFilename << std::endl;
-
-  std::ifstream fileStream(fullFilename.c_str());
-
-  if (!fileStream) {
-    std::cerr << "Could not find specified file: " << fullFilename << std::endl;
-    return false;
-  }
-
-  tinyobj::MaterialStreamReader materialStreamReader(fileStream);
-  tinyobj::MaterialStreamReader* materialReader = readMaterials
-    ? &materialStreamReader
-    : NULL;
-
-  tinyobj::attrib_t attrib;
-  std::vector<tinyobj::shape_t> shapes;
-  std::vector<tinyobj::material_t> materials;
-
-  std::string err;
-  bool ret = tinyobj::LoadObj(&attrib, &shapes, &materials, &err, &fileStream, materialReader);
-
-  if (!err.empty()) {
-    std::cerr << err << std::endl;
-  }
-
-  if (!ret) {
-    printf("Failed to load/parse .obj.\n");
-    return false;
-  }
-
-  std::cout << "Loaded material count: " << materials.size() << "\n";
-
-  return true;
-}
 
 static bool
 TestStreamLoadObj()
@@ -393,16 +351,6 @@ TEST_CASE("stream_load", "[Stream]") {
     REQUIRE(true == TestStreamLoadObj());
 }
 
-TEST_CASE("stream_load_from_file_skipping_materials", "[Stream]") {
-  REQUIRE(true == TestLoadObjFromPreopenedFile(
-    "../models/pbr-mat-ext.obj", gMtlBasePath, /*readMaterials*/false, /*triangulate*/false));
-}
-
-TEST_CASE("stream_load_from_file_with_materials", "[Stream]") {
-  REQUIRE(true == TestLoadObjFromPreopenedFile(
-    "../models/pbr-mat-ext.obj", gMtlBasePath, /*readMaterials*/true, /*triangulate*/false));
-}
-
 TEST_CASE("trailing_whitespace_in_mtl", "[Issue92]") {
   tinyobj::attrib_t attrib;
   std::vector<tinyobj::shape_t> shapes;
@@ -454,7 +402,6 @@ TEST_CASE("transmittance_filter_Tf", "[Issue95-Tf]") {
   REQUIRE(0.2 == Approx(materials[0].transmittance[1]));
   REQUIRE(0.3 == Approx(materials[0].transmittance[2]));
 }
-
 TEST_CASE("transmittance_filter_Kt", "[Issue95-Kt]") {
   tinyobj::attrib_t attrib;
   std::vector<tinyobj::shape_t> shapes;
@@ -471,63 +418,6 @@ TEST_CASE("transmittance_filter_Kt", "[Issue95-Kt]") {
   REQUIRE(0.1 == Approx(materials[0].transmittance[0]));
   REQUIRE(0.2 == Approx(materials[0].transmittance[1]));
   REQUIRE(0.3 == Approx(materials[0].transmittance[2]));
-}
-
-TEST_CASE("usemtl_at_last_line", "[Issue104]") {
-  tinyobj::attrib_t attrib;
-  std::vector<tinyobj::shape_t> shapes;
-  std::vector<tinyobj::material_t> materials;
-
-  std::string err;
-  bool ret = tinyobj::LoadObj(&attrib, &shapes, &materials, &err, "../models/usemtl-issue-104.obj", gMtlBasePath);
-
-  if (!err.empty()) {
-    std::cerr << err << std::endl;
-  }
-  REQUIRE(true == ret);
-  REQUIRE(1 == shapes.size());
-}
-
-TEST_CASE("texture_opts", "[Issue85]") {
-  tinyobj::attrib_t attrib;
-  std::vector<tinyobj::shape_t> shapes;
-  std::vector<tinyobj::material_t> materials;
-
-  std::string err;
-  bool ret = tinyobj::LoadObj(&attrib, &shapes, &materials, &err, "../models/texture-options-issue-85.obj", gMtlBasePath);
-
-  if (!err.empty()) {
-    std::cerr << err << std::endl;
-  }
-  REQUIRE(true == ret);
-  REQUIRE(1 == shapes.size());
-  REQUIRE(3 == materials.size());
-  REQUIRE(0 == materials[0].name.compare("default"));
-  REQUIRE(0 == materials[1].name.compare("bm2"));
-  REQUIRE(0 == materials[2].name.compare("bm3"));
-  REQUIRE(true == materials[0].ambient_texopt.clamp);
-  REQUIRE(0.1 == Approx(materials[0].diffuse_texopt.origin_offset[0]));
-  REQUIRE(0.0 == Approx(materials[0].diffuse_texopt.origin_offset[1]));
-  REQUIRE(0.0 == Approx(materials[0].diffuse_texopt.origin_offset[2]));
-  REQUIRE(0.1 == Approx(materials[0].specular_texopt.scale[0]));
-  REQUIRE(0.2 == Approx(materials[0].specular_texopt.scale[1]));
-  REQUIRE(1.0 == Approx(materials[0].specular_texopt.scale[2]));
-  REQUIRE(0.1 == Approx(materials[0].specular_highlight_texopt.turbulence[0]));
-  REQUIRE(0.2 == Approx(materials[0].specular_highlight_texopt.turbulence[1]));
-  REQUIRE(0.3 == Approx(materials[0].specular_highlight_texopt.turbulence[2]));
-  REQUIRE(3.0 == Approx(materials[0].bump_texopt.bump_multiplier));
-
-  REQUIRE(0.1 == Approx(materials[1].specular_highlight_texopt.brightness));
-  REQUIRE(0.3 == Approx(materials[1].specular_highlight_texopt.contrast));
-  REQUIRE('r' == materials[1].bump_texopt.imfchan);
-
-  REQUIRE(tinyobj::TEXTURE_TYPE_SPHERE == materials[2].diffuse_texopt.type);
-  REQUIRE(tinyobj::TEXTURE_TYPE_CUBE_TOP == materials[2].specular_texopt.type);
-  REQUIRE(tinyobj::TEXTURE_TYPE_CUBE_BOTTOM == materials[2].specular_highlight_texopt.type);
-  REQUIRE(tinyobj::TEXTURE_TYPE_CUBE_LEFT == materials[2].ambient_texopt.type);
-  REQUIRE(tinyobj::TEXTURE_TYPE_CUBE_RIGHT == materials[2].alpha_texopt.type);
-  REQUIRE(tinyobj::TEXTURE_TYPE_CUBE_FRONT == materials[2].bump_texopt.type);
-  REQUIRE(tinyobj::TEXTURE_TYPE_CUBE_BACK == materials[2].displacement_texopt.type);
 }
 
 #if 0

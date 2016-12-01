@@ -16,21 +16,15 @@ Tiny but powerful single file wavefront obj loader written in C++. No dependency
 
 `tinyobjloader` is good for embedding .obj loader to your (global illumination) renderer ;-)
 
-If you are looking for C89 version, please see https://github.com/syoyo/tinyobjloader-c .
-
-Notice!
--------
-
-We have released new version v1.0.0 on 20 Aug, 2016.
-Old version is available `v0.9.x` branch https://github.com/syoyo/tinyobjloader/tree/v0.9.x
 
 ## What's new
 
-* 20 Aug, 2016 : Bump version v1.0.0. New data strcutre and API!
+* XX  YY, ZZZZ : New data strcutre and API!
 
 ### Old version
 
-Previous old version is avaiable in `v0.9.x` branch.
+Previous old version is avaiable as `v0.9` branch.
+
 
 ## Example
 
@@ -42,20 +36,16 @@ http://graphics.cs.williams.edu/data/meshes.xml
 ![](images/sanmugel.png) 
 
 * [examples/viewer/](examples/viewer) OpenGL .obj viewer 
-* [examples/callback_api/](examples/callback_api/) Callback API example 
-* [examples/voxelize/](examples/voxelize/) Voxelizer example 
 
 ## Use case
 
 TinyObjLoader is successfully used in ...
 
-### New version(v1.0.x)
+### New version
 
-* Loading models in Vulkan Tutorial https://vulkan-tutorial.com/Loading_models
-* .obj viewer with Metal https://github.com/middlefeng/NuoModelViewer/tree/master
 * Your project here!
 
-### Old version(v0.9.x)
+### Old version
 
 * bullet3 https://github.com/erwincoumans/bullet3
 * pbrt-v2 https://github.com/mmp/pbrt-v2
@@ -68,17 +58,7 @@ TinyObjLoader is successfully used in ...
 * pbrt-v3 https://github.com/mmp/pbrt-v3
 * cocos2d-x https://github.com/cocos2d/cocos2d-x/
 * Android Vulkan demo https://github.com/SaschaWillems/Vulkan
-* voxelizer https://github.com/karimnaaji/voxelizer
-* Probulator https://github.com/kayru/Probulator
-* OptiX Prime baking https://github.com/nvpro-samples/optix_prime_baking
-* FireRays SDK https://github.com/GPUOpen-LibrariesAndSDKs/FireRays_SDK
-* parg, tiny C library of various graphics utilities and GL demos https://github.com/prideout/parg
-* Opengl unit of ChronoEngine https://github.com/projectchrono/chrono-opengl
-* Point Based Global Illumination on modern GPU https://pbgi.wordpress.com/code-source/
-* Fast OBJ file importing and parsing in CUDA http://researchonline.jcu.edu.au/42515/1/2015.CVM.OBJCUDA.pdf
-* Sorted Shading for Uni-Directional Pathtracing by Joshua Bainbridge https://nccastaff.bournemouth.ac.uk/jmacey/MastersProjects/MSc15/02Josh/joshua_bainbridge_thesis.pdf
-* GeeXLab http://www.geeks3d.com/hacklab/20160531/geexlab-0-12-0-0-released-for-windows/
-
+* Loading models in Vulkan Tutorial https://vulkan-tutorial.com/Loading_models
 
 ## Features
 
@@ -89,7 +69,6 @@ TinyObjLoader is successfully used in ...
 * Material
   * Unknown material attributes are returned as key-value(value is string) map.
 * Crease tag('t'). This is OpenSubdiv specific(not in wavefront .obj specification)
-* PBR material extension for .MTL. Its proposed here: http://exocortex.com/blog/extending_wavefront_mtl_to_support_pbr
 * Callback API for custom loading.
 
 
@@ -97,9 +76,6 @@ TinyObjLoader is successfully used in ...
 
 * [ ] Fix obj_sticker example.
 * [ ] More unit test codes.
-* [ ] Texture options
-* [ ] Normal vector generation
-  * [ ] Support smoothing groups
 
 ## License
 

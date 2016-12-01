@@ -23,10 +23,6 @@ THE SOFTWARE.
 */
 
 //
-// version 1.0.3 : Support parsing texture options(#85)
-// version 1.0.2 : Improve parsing speed by about a factor of 2 for large
-// files(#105)
-// version 1.0.1 : Fixes a shape is lost if obj ends with a 'usemtl'(#104)
 // version 1.0.0 : Change data structure. Change license from BSD to MIT.
 //
 
@@ -44,82 +40,6 @@ THE SOFTWARE.
 #include <vector>
 
 namespace tinyobj {
-
-// https://en.wikipedia.org/wiki/Wavefront_.obj_file says ...
-//
-//  -blendu on | off                       # set horizontal texture blending
-//  (default on)
-//  -blendv on | off                       # set vertical texture blending
-//  (default on)
-//  -boost float_value                     # boost mip-map sharpness
-//  -mm base_value gain_value              # modify texture map values (default
-//  0 1)
-//                                         #     base_value = brightness,
-//                                         gain_value = contrast
-//  -o u [v [w]]                           # Origin offset             (default
-//  0 0 0)
-//  -s u [v [w]]                           # Scale                     (default
-//  1 1 1)
-//  -t u [v [w]]                           # Turbulence                (default
-//  0 0 0)
-//  -texres resolution                     # texture resolution to create
-//  -clamp on | off                        # only render texels in the clamped
-//  0-1 range (default off)
-//                                         #   When unclamped, textures are
-//                                         repeated across a surface,
-//                                         #   when clamped, only texels which
-//                                         fall within the 0-1
-//                                         #   range are rendered.
-//  -bm mult_value                         # bump multiplier (for bump maps
-//  only)
-//
-//  -imfchan r | g | b | m | l | z         # specifies which channel of the file
-//  is used to
-//                                         # create a scalar or bump texture.
-//                                         r:red, g:green,
-//                                         # b:blue, m:matte, l:luminance,
-//                                         z:z-depth..
-//                                         # (the default for bump is 'l' and
-//                                         for decal is 'm')
-//  bump -imfchan r bumpmap.tga            # says to use the red channel of
-//  bumpmap.tga as the bumpmap
-//
-// For reflection maps...
-//
-//   -type sphere                           # specifies a sphere for a "refl"
-//   reflection map
-//   -type cube_top    | cube_bottom |      # when using a cube map, the texture
-//   file for each
-//         cube_front  | cube_back   |      # side of the cube is specified
-//         separately
-//         cube_left   | cube_right
-
-typedef enum {
-  TEXTURE_TYPE_NONE,  // default
-  TEXTURE_TYPE_SPHERE,
-  TEXTURE_TYPE_CUBE_TOP,
-  TEXTURE_TYPE_CUBE_BOTTOM,
-  TEXTURE_TYPE_CUBE_FRONT,
-  TEXTURE_TYPE_CUBE_BACK,
-  TEXTURE_TYPE_CUBE_LEFT,
-  TEXTURE_TYPE_CUBE_RIGHT
-} texture_type_t;
-
-typedef struct {
-  texture_type_t type;     // -type (default TEXTURE_TYPE_NONE)
-  float sharpness;         // -boost (default 1.0?)
-  float brightness;        // base_value in -mm option (default 0)
-  float contrast;          // gain_value in -mm option (default 1)
-  float origin_offset[3];  // -o u [v [w]] (default 0 0 0)
-  float scale[3];          // -s u [v [w]] (default 1 1 1)
-  float turbulence[3];     // -t u [v [w]] (default 0 0 0)
-  // int   texture_resolution; // -texres resolution (default = ?) TODO
-  bool clamp;    // -clamp (default false)
-  char imfchan;  // -imfchan (the default for bump is 'l' and for decal is 'm')
-  bool blendu;   // -blendu (default on)
-  bool blendv;   // -blendv (default on)
-  float bump_multiplier;  // -bm (for bump maps only, default 1.0)
-} texture_option_t;
 
 typedef struct {
   std::string name;
@@ -145,38 +65,20 @@ typedef struct {
   std::string displacement_texname;        // disp
   std::string alpha_texname;               // map_d
 
-  texture_option_t ambient_texopt;
-  texture_option_t diffuse_texopt;
-  texture_option_t specular_texopt;
-  texture_option_t specular_highlight_texopt;
-  texture_option_t bump_texopt;
-  texture_option_t displacement_texopt;
-  texture_option_t alpha_texopt;
-
   // PBR extension
   // http://exocortex.com/blog/extending_wavefront_mtl_to_support_pbr
-  float roughness;            // [0, 1] default 0
-  float metallic;             // [0, 1] default 0
-  float sheen;                // [0, 1] default 0
-  float clearcoat_thickness;  // [0, 1] default 0
-  float clearcoat_roughness;  // [0, 1] default 0
-  float anisotropy;           // aniso. [0, 1] default 0
-  float anisotropy_rotation;  // anisor. [0, 1] default 0
-  float pad0;
-  float pad1;
+  float roughness;                // [0, 1] default 0
+  float metallic;                 // [0, 1] default 0
+  float sheen;                    // [0, 1] default 0
+  float clearcoat_thickness;      // [0, 1] default 0
+  float clearcoat_roughness;      // [0, 1] default 0
+  float anisotropy;               // aniso. [0, 1] default 0
+  float anisotropy_rotation;      // anisor. [0, 1] default 0
   std::string roughness_texname;  // map_Pr
   std::string metallic_texname;   // map_Pm
   std::string sheen_texname;      // map_Ps
   std::string emissive_texname;   // map_Ke
   std::string normal_texname;     // norm. For normal mapping.
-
-  texture_option_t roughness_texopt;
-  texture_option_t metallic_texopt;
-  texture_option_t sheen_texopt;
-  texture_option_t emissive_texopt;
-  texture_option_t normal_texopt;
-
-  int pad2;
 
   std::map<std::string, std::string> unknown_parameter;
 } material_t;
@@ -189,7 +91,7 @@ typedef struct {
   std::vector<std::string> stringValues;
 } tag_t;
 
-// Index struct to support different indices for vtx/normal/texcoord.
+// Index struct to support differnt indices for vtx/normal/texcoord.
 // -1 means not used.
 typedef struct {
   int vertex_index;
@@ -266,28 +168,15 @@ class MaterialReader {
 
 class MaterialFileReader : public MaterialReader {
  public:
-  explicit MaterialFileReader(const std::string &mtl_basedir)
-      : m_mtlBaseDir(mtl_basedir) {} 
+  explicit MaterialFileReader(const std::string &mtl_basepath)
+      : m_mtlBasePath(mtl_basepath) {}
   virtual ~MaterialFileReader() {}
   virtual bool operator()(const std::string &matId,
                           std::vector<material_t> *materials,
                           std::map<std::string, int> *matMap, std::string *err);
 
  private:
-  std::string m_mtlBaseDir;
-};
-
-class MaterialStreamReader : public MaterialReader {
- public:
-  explicit MaterialStreamReader(std::istream &inStream)
-      : m_inStream(inStream) {}
-  virtual ~MaterialStreamReader() {}
-  virtual bool operator()(const std::string &matId,
-                          std::vector<material_t> *materials,
-                          std::map<std::string, int> *matMap, std::string *err);
-
- private:
-  std::istream &m_inStream;
+  std::string m_mtlBasePath;
 };
 
 /// Loads .obj from a file.
@@ -295,12 +184,12 @@ class MaterialStreamReader : public MaterialReader {
 /// 'shapes' will be filled with parsed shape data
 /// Returns true when loading .obj become success.
 /// Returns warning and error message into `err`
-/// 'mtl_basedir' is optional, and used for base directory for .mtl file.
+/// 'mtl_basepath' is optional, and used for base path for .mtl file.
 /// 'triangulate' is optional, and used whether triangulate polygon face in .obj
 /// or not.
 bool LoadObj(attrib_t *attrib, std::vector<shape_t> *shapes,
              std::vector<material_t> *materials, std::string *err,
-             const char *filename, const char *mtl_basedir = NULL,
+             const char *filename, const char *mtl_basepath = NULL,
              bool triangulate = true);
 
 /// Loads .obj from a file with custom user callback.
@@ -320,7 +209,7 @@ bool LoadObjWithCallback(std::istream &inStream, const callback_t &callback,
 /// Returns warning and error message into `err`
 bool LoadObj(attrib_t *attrib, std::vector<shape_t> *shapes,
              std::vector<material_t> *materials, std::string *err,
-             std::istream *inStream, MaterialReader *readMatFn = NULL,
+             std::istream *inStream, MaterialReader *readMatFn,
              bool triangulate = true);
 
 /// Loads materials into std::map
@@ -367,38 +256,6 @@ struct obj_shape {
   std::vector<float> vn;
   std::vector<float> vt;
 };
-
-// See
-// http://stackoverflow.com/questions/6089231/getting-std-ifstream-to-handle-lf-cr-and-crlf
-static std::istream &safeGetline(std::istream &is, std::string &t) {
-  t.clear();
-
-  // The characters in the stream are read one-by-one using a std::streambuf.
-  // That is faster than reading them one-by-one using the std::istream.
-  // Code that uses streambuf this way must be guarded by a sentry object.
-  // The sentry object performs various tasks,
-  // such as thread synchronization and updating the stream state.
-
-  std::istream::sentry se(is, true);
-  std::streambuf *sb = is.rdbuf();
-
-  for (;;) {
-    int c = sb->sbumpc();
-    switch (c) {
-      case '\n':
-        return is;
-      case '\r':
-        if (sb->sgetc() == '\n') sb->sbumpc();
-        return is;
-      case EOF:
-        // Also handle the case when the last line has no line ending
-        if (t.empty()) is.setstate(std::ios::eofbit);
-        return is;
-      default:
-        t += static_cast<char>(c);
-    }
-  }
-}
 
 #define IS_SPACE(x) (((x) == ' ') || ((x) == '\t'))
 #define IS_DIGIT(x) \
@@ -515,14 +372,8 @@ static bool tryParseDouble(const char *s, const char *s_end, double *result) {
     read = 1;
     end_not_reached = (curr != s_end);
     while (end_not_reached && IS_DIGIT(*curr)) {
-      static const double pow_lut[] = {
-          1.0, 0.1, 0.01, 0.001, 0.0001, 0.00001, 0.000001, 0.0000001,
-      };
-      const int lut_entries = sizeof pow_lut / sizeof pow_lut[0];
-
       // NOTE: Don't use powf here, it will absolutely murder precision.
-      mantissa += static_cast<int>(*curr - 0x30) *
-                  (read < lut_entries ? pow_lut[read] : pow(10.0, -read));
+      mantissa += static_cast<int>(*curr - 0x30) * pow(10.0, -read);
       read++;
       curr++;
       end_not_reached = (curr != s_end);
@@ -563,8 +414,7 @@ static bool tryParseDouble(const char *s, const char *s_end, double *result) {
 
 assemble:
   *result =
-      (sign == '+' ? 1 : -1) *
-      (exponent ? ldexp(mantissa * pow(5.0, exponent), exponent) : mantissa);
+      (sign == '+' ? 1 : -1) * ldexp(mantissa * pow(5.0, exponent), exponent);
   return true;
 fail:
   return false;
@@ -580,72 +430,24 @@ static inline float parseFloat(const char **token, double default_value = 0.0) {
   return f;
 }
 
-static inline void parseFloat2(float *x, float *y, const char **token,
-                               const double default_x = 0.0,
-                               const double default_y = 0.0) {
-  (*x) = parseFloat(token, default_x);
-  (*y) = parseFloat(token, default_y);
+static inline void parseFloat2(float *x, float *y, const char **token) {
+  (*x) = parseFloat(token);
+  (*y) = parseFloat(token);
 }
 
-static inline void parseFloat3(float *x, float *y, float *z, const char **token,
-                               const double default_x = 0.0,
-                               const double default_y = 0.0,
-                               const double default_z = 0.0) {
-  (*x) = parseFloat(token, default_x);
-  (*y) = parseFloat(token, default_y);
-  (*z) = parseFloat(token, default_z);
+static inline void parseFloat3(float *x, float *y, float *z,
+                               const char **token) {
+  (*x) = parseFloat(token);
+  (*y) = parseFloat(token);
+  (*z) = parseFloat(token);
 }
 
 static inline void parseV(float *x, float *y, float *z, float *w,
-                          const char **token, const double default_x = 0.0,
-                          const double default_y = 0.0,
-                          const double default_z = 0.0,
-                          const double default_w = 1.0) {
-  (*x) = parseFloat(token, default_x);
-  (*y) = parseFloat(token, default_y);
-  (*z) = parseFloat(token, default_z);
-  (*w) = parseFloat(token, default_w);
-}
-
-static inline bool parseOnOff(const char **token, bool default_value = true) {
-  (*token) += strspn((*token), " \t");
-  const char *end = (*token) + strcspn((*token), " \t\r");
-
-  bool ret = default_value;
-  if ((0 == strncmp((*token), "on", 2))) {
-    ret = true;
-  } else if ((0 == strncmp((*token), "off", 3))) {
-    ret = false;
-  }
-
-  (*token) = end;
-  return ret;
-}
-
-static inline texture_type_t parseTextureType(
-    const char **token, texture_type_t default_value = TEXTURE_TYPE_NONE) {
-  (*token) += strspn((*token), " \t");
-  const char *end = (*token) + strcspn((*token), " \t\r");
-  texture_type_t ty = default_value;
-
-  if ((0 == strncmp((*token), "cube_top", strlen("cube_top")))) {
-    ty = TEXTURE_TYPE_CUBE_TOP;
-  } else if ((0 == strncmp((*token), "cube_bottom", strlen("cube_bottom")))) {
-    ty = TEXTURE_TYPE_CUBE_BOTTOM;
-  } else if ((0 == strncmp((*token), "cube_left", strlen("cube_left")))) {
-    ty = TEXTURE_TYPE_CUBE_LEFT;
-  } else if ((0 == strncmp((*token), "cube_right", strlen("cube_right")))) {
-    ty = TEXTURE_TYPE_CUBE_RIGHT;
-  } else if ((0 == strncmp((*token), "cube_front", strlen("cube_front")))) {
-    ty = TEXTURE_TYPE_CUBE_FRONT;
-  } else if ((0 == strncmp((*token), "cube_back", strlen("cube_back")))) {
-    ty = TEXTURE_TYPE_CUBE_BACK;
-  } else if ((0 == strncmp((*token), "sphere", strlen("sphere")))) {
-    ty = TEXTURE_TYPE_SPHERE;
-  }
-
-  (*token) = end;
-  return ty;
+                          const char **token) {
+  (*x) = parseFloat(token);
+  (*y) = parseFloat(token);
+  (*z) = parseFloat(token);
+  (*w) = parseFloat(token, 1.0);
 }
 
 static tag_sizes parseTagTriple(const char **token) {
@@ -736,102 +538,6 @@ static vertex_index parseRawTriple(const char **token) {
   vi.vn_idx = atoi((*token));
   (*token) += strcspn((*token), "/ \t\r");
   return vi;
-}
-
-static bool ParseTextureNameAndOption(std::string *texname,
-                                      texture_option_t *texopt,
-                                      const char *linebuf, const bool is_bump) {
-  // @todo { write more robust lexer and parser. }
-  bool found_texname = false;
-  std::string texture_name;
-
-  // Fill with default value for texopt.
-  if (is_bump) {
-    texopt->imfchan = 'l';
-  } else {
-    texopt->imfchan = 'm';
-  }
-  texopt->bump_multiplier = 1.0f;
-  texopt->clamp = false;
-  texopt->blendu = true;
-  texopt->blendv = true;
-  texopt->sharpness = 1.0f;
-  texopt->brightness = 0.0f;
-  texopt->contrast = 1.0f;
-  texopt->origin_offset[0] = 0.0f;
-  texopt->origin_offset[1] = 0.0f;
-  texopt->origin_offset[2] = 0.0f;
-  texopt->scale[0] = 1.0f;
-  texopt->scale[1] = 1.0f;
-  texopt->scale[2] = 1.0f;
-  texopt->turbulence[0] = 0.0f;
-  texopt->turbulence[1] = 0.0f;
-  texopt->turbulence[2] = 0.0f;
-  texopt->type = TEXTURE_TYPE_NONE;
-
-  const char *token = linebuf;  // Assume line ends with NULL
-
-  while (!IS_NEW_LINE((*token))) {
-    if ((0 == strncmp(token, "-blendu", 7)) && IS_SPACE((token[7]))) {
-      token += 8;
-      texopt->blendu = parseOnOff(&token, /* default */ true);
-    } else if ((0 == strncmp(token, "-blendv", 7)) && IS_SPACE((token[7]))) {
-      token += 8;
-      texopt->blendv = parseOnOff(&token, /* default */ true);
-    } else if ((0 == strncmp(token, "-clamp", 6)) && IS_SPACE((token[6]))) {
-      token += 7;
-      texopt->clamp = parseOnOff(&token, /* default */ true);
-    } else if ((0 == strncmp(token, "-boost", 6)) && IS_SPACE((token[6]))) {
-      token += 7;
-      texopt->sharpness = parseFloat(&token, 1.0);
-    } else if ((0 == strncmp(token, "-bm", 3)) && IS_SPACE((token[3]))) {
-      token += 4;
-      texopt->bump_multiplier = parseFloat(&token, 1.0);
-    } else if ((0 == strncmp(token, "-o", 2)) && IS_SPACE((token[2]))) {
-      token += 3;
-      parseFloat3(&(texopt->origin_offset[0]), &(texopt->origin_offset[1]),
-                  &(texopt->origin_offset[2]), &token);
-    } else if ((0 == strncmp(token, "-s", 2)) && IS_SPACE((token[2]))) {
-      token += 3;
-      parseFloat3(&(texopt->scale[0]), &(texopt->scale[1]), &(texopt->scale[2]),
-                  &token, 1.0, 1.0, 1.0);
-    } else if ((0 == strncmp(token, "-t", 2)) && IS_SPACE((token[2]))) {
-      token += 3;
-      parseFloat3(&(texopt->turbulence[0]), &(texopt->turbulence[1]),
-                  &(texopt->turbulence[2]), &token);
-    } else if ((0 == strncmp(token, "-type", 5)) && IS_SPACE((token[5]))) {
-      token += 5;
-      texopt->type = parseTextureType((&token), TEXTURE_TYPE_NONE);
-    } else if ((0 == strncmp(token, "-imfchan", 8)) && IS_SPACE((token[8]))) {
-      token += 9;
-      token += strspn(token, " \t");
-      const char *end = token + strcspn(token, " \t\r");
-      if ((end - token) == 1) {  // Assume one char for -imfchan
-        texopt->imfchan = (*token);
-      }
-      token = end;
-    } else if ((0 == strncmp(token, "-mm", 3)) && IS_SPACE((token[3]))) {
-      token += 4;
-      parseFloat2(&(texopt->brightness), &(texopt->contrast), &token, 0.0, 1.0);
-    } else {
-      // Assume texture filename
-      token += strspn(token, " \t");         // skip space
-      size_t len = strcspn(token, " \t\r");  // untile next space
-      texture_name = std::string(token, token + len);
-      token += len;
-
-      token += strspn(token, " \t");  // skip space
-
-      found_texname = true;
-    }
-  }
-
-  if (found_texname) {
-    (*texname) = texture_name;
-    return true;
-  } else {
-    return false;
-  }
 }
 
 static void InitMaterial(material_t *material) {
@@ -940,9 +646,12 @@ void LoadMtl(std::map<std::string, int> *material_map,
   material_t material;
   InitMaterial(&material);
 
-  std::string linebuf;
+  size_t maxchars = 8192;           // Alloc enough size.
+  std::vector<char> buf(maxchars);  // Alloc enough size.
   while (inStream->peek() != -1) {
-    safeGetline(*inStream, linebuf);
+    inStream->getline(&buf[0], static_cast<std::streamsize>(maxchars));
+
+    std::string linebuf(&buf[0]);
 
     // Trim trailing whitespace.
     if (linebuf.size() > 0) {
@@ -1139,54 +848,35 @@ void LoadMtl(std::map<std::string, int> *material_map,
     // ambient texture
     if ((0 == strncmp(token, "map_Ka", 6)) && IS_SPACE(token[6])) {
       token += 7;
-      ParseTextureNameAndOption(&(material.ambient_texname),
-                                &(material.ambient_texopt), token,
-                                /* is_bump */ false);
+      material.ambient_texname = token;
       continue;
     }
 
     // diffuse texture
     if ((0 == strncmp(token, "map_Kd", 6)) && IS_SPACE(token[6])) {
       token += 7;
-      ParseTextureNameAndOption(&(material.diffuse_texname),
-                                &(material.diffuse_texopt), token,
-                                /* is_bump */ false);
+      material.diffuse_texname = token;
       continue;
     }
 
     // specular texture
     if ((0 == strncmp(token, "map_Ks", 6)) && IS_SPACE(token[6])) {
       token += 7;
-      ParseTextureNameAndOption(&(material.specular_texname),
-                                &(material.specular_texopt), token,
-                                /* is_bump */ false);
+      material.specular_texname = token;
       continue;
     }
 
     // specular highlight texture
     if ((0 == strncmp(token, "map_Ns", 6)) && IS_SPACE(token[6])) {
       token += 7;
-      ParseTextureNameAndOption(&(material.specular_highlight_texname),
-                                &(material.specular_highlight_texopt), token,
-                                /* is_bump */ false);
+      material.specular_highlight_texname = token;
       continue;
     }
 
     // bump texture
     if ((0 == strncmp(token, "map_bump", 8)) && IS_SPACE(token[8])) {
       token += 9;
-      ParseTextureNameAndOption(&(material.bump_texname),
-                                &(material.bump_texopt), token,
-                                /* is_bump */ true);
-      continue;
-    }
-
-    // bump texture
-    if ((0 == strncmp(token, "bump", 4)) && IS_SPACE(token[4])) {
-      token += 5;
-      ParseTextureNameAndOption(&(material.bump_texname),
-                                &(material.bump_texopt), token,
-                                /* is_bump */ true);
+      material.bump_texname = token;
       continue;
     }
 
@@ -1194,63 +884,55 @@ void LoadMtl(std::map<std::string, int> *material_map,
     if ((0 == strncmp(token, "map_d", 5)) && IS_SPACE(token[5])) {
       token += 6;
       material.alpha_texname = token;
-      ParseTextureNameAndOption(&(material.alpha_texname),
-                                &(material.alpha_texopt), token,
-                                /* is_bump */ false);
+      continue;
+    }
+
+    // bump texture
+    if ((0 == strncmp(token, "bump", 4)) && IS_SPACE(token[4])) {
+      token += 5;
+      material.bump_texname = token;
       continue;
     }
 
     // displacement texture
     if ((0 == strncmp(token, "disp", 4)) && IS_SPACE(token[4])) {
       token += 5;
-      ParseTextureNameAndOption(&(material.displacement_texname),
-                                &(material.displacement_texopt), token,
-                                /* is_bump */ false);
+      material.displacement_texname = token;
       continue;
     }
 
     // PBR: roughness texture
     if ((0 == strncmp(token, "map_Pr", 6)) && IS_SPACE(token[6])) {
       token += 7;
-      ParseTextureNameAndOption(&(material.roughness_texname),
-                                &(material.roughness_texopt), token,
-                                /* is_bump */ false);
+      material.roughness_texname = token;
       continue;
     }
 
     // PBR: metallic texture
     if ((0 == strncmp(token, "map_Pm", 6)) && IS_SPACE(token[6])) {
       token += 7;
-      ParseTextureNameAndOption(&(material.metallic_texname),
-                                &(material.metallic_texopt), token,
-                                /* is_bump */ false);
+      material.metallic_texname = token;
       continue;
     }
 
     // PBR: sheen texture
     if ((0 == strncmp(token, "map_Ps", 6)) && IS_SPACE(token[6])) {
       token += 7;
-      ParseTextureNameAndOption(&(material.sheen_texname),
-                                &(material.sheen_texopt), token,
-                                /* is_bump */ false);
+      material.sheen_texname = token;
       continue;
     }
 
     // PBR: emissive texture
     if ((0 == strncmp(token, "map_Ke", 6)) && IS_SPACE(token[6])) {
       token += 7;
-      ParseTextureNameAndOption(&(material.emissive_texname),
-                                &(material.emissive_texopt), token,
-                                /* is_bump */ false);
+      material.emissive_texname = token;
       continue;
     }
 
     // PBR: normal map texture
     if ((0 == strncmp(token, "norm", 4)) && IS_SPACE(token[4])) {
       token += 5;
-      ParseTextureNameAndOption(
-          &(material.normal_texname), &(material.normal_texopt), token,
-          /* is_bump */ false);  // @fixme { is_bump will be true? }
+      material.normal_texname = token;
       continue;
     }
 
@@ -1279,8 +961,8 @@ bool MaterialFileReader::operator()(const std::string &matId,
                                     std::string *err) {
   std::string filepath;
 
-  if (!m_mtlBaseDir.empty()) {
-    filepath = std::string(m_mtlBaseDir) + matId;
+  if (!m_mtlBasePath.empty()) {
+    filepath = std::string(m_mtlBasePath) + matId;
   } else {
     filepath = matId;
   }
@@ -1298,26 +980,9 @@ bool MaterialFileReader::operator()(const std::string &matId,
   return true;
 }
 
-bool MaterialStreamReader::operator()(const std::string &matId,
-                                      std::vector<material_t> *materials,
-                                      std::map<std::string, int> *matMap,
-                                      std::string *err) {
-  (void)matId;
-  LoadMtl(matMap, materials, &m_inStream);
-  if (!m_inStream) {
-    std::stringstream ss;
-    ss << "WARN: Material stream in error state."
-       << " Created a default material.";
-    if (err) {
-      (*err) += ss.str();
-    }
-  }
-  return true;
-}
-
 bool LoadObj(attrib_t *attrib, std::vector<shape_t> *shapes,
              std::vector<material_t> *materials, std::string *err,
-             const char *filename, const char *mtl_basedir,
+             const char *filename, const char *mtl_basepath,
              bool trianglulate) {
   attrib->vertices.clear();
   attrib->normals.clear();
@@ -1335,11 +1000,11 @@ bool LoadObj(attrib_t *attrib, std::vector<shape_t> *shapes,
     return false;
   }
 
-  std::string baseDir;
-  if (mtl_basedir) {
-    baseDir = mtl_basedir;
+  std::string basePath;
+  if (mtl_basepath) {
+    basePath = mtl_basepath;
   }
-  MaterialFileReader matFileReader(baseDir);
+  MaterialFileReader matFileReader(basePath);
 
   return LoadObj(attrib, shapes, materials, err, &ifs, &matFileReader,
                  trianglulate);
@@ -1347,7 +1012,7 @@ bool LoadObj(attrib_t *attrib, std::vector<shape_t> *shapes,
 
 bool LoadObj(attrib_t *attrib, std::vector<shape_t> *shapes,
              std::vector<material_t> *materials, std::string *err,
-             std::istream *inStream, MaterialReader *readMatFn /*= NULL*/,
+             std::istream *inStream, MaterialReader *readMatFn,
              bool triangulate) {
   std::stringstream errss;
 
@@ -1364,9 +1029,9 @@ bool LoadObj(attrib_t *attrib, std::vector<shape_t> *shapes,
 
   shape_t shape;
 
-  std::string linebuf;
   while (inStream->peek() != -1) {
-    safeGetline(*inStream, linebuf);
+    std::string linebuf;
+    std::getline((*inStream), linebuf);
 
     // Trim newline '\r\n' or '\n'
     if (linebuf.size() > 0) {
@@ -1466,9 +1131,7 @@ bool LoadObj(attrib_t *attrib, std::vector<shape_t> *shapes,
       }
 
       if (newMaterialId != material) {
-        // Create per-face material. Thus we don't add `shape` to `shapes` at
-        // this time.
-        // just clear `faceGroup` after `exportFaceGroupToShape()` call.
+        // Create per-face material
         exportFaceGroupToShape(&shape, faceGroup, tags, material, name,
                                triangulate);
         faceGroup.clear();
@@ -1480,25 +1143,23 @@ bool LoadObj(attrib_t *attrib, std::vector<shape_t> *shapes,
 
     // load mtl
     if ((0 == strncmp(token, "mtllib", 6)) && IS_SPACE((token[6]))) {
-      if (readMatFn) {
-        char namebuf[TINYOBJ_SSCANF_BUFFER_SIZE];
-        token += 7;
+      char namebuf[TINYOBJ_SSCANF_BUFFER_SIZE];
+      token += 7;
 #ifdef _MSC_VER
-        sscanf_s(token, "%s", namebuf, (unsigned)_countof(namebuf));
+      sscanf_s(token, "%s", namebuf, (unsigned)_countof(namebuf));
 #else
-        sscanf(token, "%s", namebuf);
+      sscanf(token, "%s", namebuf);
 #endif
 
-        std::string err_mtl;
-        bool ok = (*readMatFn)(namebuf, materials, &material_map, &err_mtl);
-        if (err) {
-          (*err) += err_mtl;
-        }
+      std::string err_mtl;
+      bool ok = (*readMatFn)(namebuf, materials, &material_map, &err_mtl);
+      if (err) {
+        (*err) += err_mtl;
+      }
 
-        if (!ok) {
-          faceGroup.clear();  // for safety
-          return false;
-        }
+      if (!ok) {
+        faceGroup.clear();  // for safety
+        return false;
       }
 
       continue;
@@ -1616,11 +1277,7 @@ bool LoadObj(attrib_t *attrib, std::vector<shape_t> *shapes,
 
   bool ret = exportFaceGroupToShape(&shape, faceGroup, tags, material, name,
                                     triangulate);
-  // exportFaceGroupToShape return false when `usemtl` is called in the last
-  // line.
-  // we also add `shape` to `shapes` when `shape.mesh` has already some
-  // faces(indices)
-  if (ret || shape.mesh.indices.size()) {
+  if (ret) {
     shapes->push_back(shape);
   }
   faceGroup.clear();  // for safety
@@ -1655,7 +1312,7 @@ bool LoadObjWithCallback(std::istream &inStream, const callback_t &callback,
 
   std::string linebuf;
   while (inStream.peek() != -1) {
-    safeGetline(inStream, linebuf);
+    std::getline(inStream, linebuf);
 
     // Trim newline '\r\n' or '\n'
     if (linebuf.size() > 0) {
