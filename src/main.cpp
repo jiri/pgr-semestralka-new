@@ -143,8 +143,8 @@ int main() {
     Program lamp  { "shd/light.vert", "shd/light.frag" };
 
     /* Load data */
-    auto cube = Model { "res/unicube.obj" };
-    auto cubeModel = scale(vec3 { 1.0f }) * rotate(radians(-90.0f), vec3 { 1.0f, 0.0f, 0.0f });
+    auto cube = Model { "res/chalet2.obj" };
+    auto cubeModel = scale(vec3 { 1.0f }) * rotate(radians(-180.0f), vec3 { 0.0f, 1.0f, 0.0f });
 
     auto light = Light {
         vec3 { 1.0f, 1.0f, 0.7f },

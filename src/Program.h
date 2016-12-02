@@ -4,14 +4,17 @@
 #include <typeinfo>
 using namespace std;
 
+#include <boost/filesystem.hpp>
+
 #include <GL/glew.h>
+#include <boost/filesystem/path.hpp>
 
 #include "GLObject.h"
 
 class Shader : public GLObject {
 public:
-    Shader(const char *path);
-    Shader(string path, GLenum type);
+    Shader(boost::filesystem::path p);
+    Shader(boost::filesystem::path p, GLenum type);
     ~Shader();
 };
 
@@ -29,6 +32,7 @@ private:
     };
 
 public:
+    Program(boost::filesystem::path vpath, boost::filesystem::path fpath);
     Program(const Shader &vsh, const Shader &fsh);
     ~Program();
 

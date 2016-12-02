@@ -2,16 +2,15 @@
 
 #include <iostream>
 #include <stdexcept>
-#include <fstream>
 using namespace std;
 
-#include <boost/filesystem.hpp>
+using namespace boost::filesystem;
 
 #include <fmt/format.h>
 
 namespace {
-    GLenum guessTypeFromPath(string path) {
-        auto ex = boost::filesystem::extension(path);
+    GLenum guessTypeFromPath(path p) {
+        auto ex = p.extension().string();
 
         if (ex == ".vert" || ex == ".vsh") { return GL_VERTEX_SHADER;   }
         if (ex == ".frag" || ex == ".fsh") { return GL_FRAGMENT_SHADER; }
@@ -21,12 +20,12 @@ namespace {
         };
     }
 
-    string slurp_file(const string &path) {
-        ifstream file { path };
+    string slurp_file(path p) {
+        boost::filesystem::ifstream file { p };
 
         if (!file.is_open()) {
-            throw std::runtime_error {
-                fmt::format("Failed to open file '{}'", path)
+            throw runtime_error {
+                fmt::format("Failed to open file '{}'", p.string())
             };
         }
 
@@ -38,14 +37,14 @@ namespace {
 }
 
 /* Shader implementation */
-Shader::Shader(const char *path)
-    : Shader { path, guessTypeFromPath(path) }
+Shader::Shader(path p)
+    : Shader { p, guessTypeFromPath(p) }
 { }
 
-Shader::Shader(string path, GLenum type)
+Shader::Shader(path p, GLenum type)
     : GLObject { glCreateShader(type) }
 {
-    const auto src = slurp_file(path);
+    const auto src = slurp_file(p);
     const auto psrc = src.c_str();
 
     glShaderSource(id, 1, &psrc, nullptr);
@@ -61,7 +60,7 @@ Shader::Shader(string path, GLenum type)
 
         /* TODO: Possible resource leak here */
         throw runtime_error {
-            fmt::format("Compilation of shader '{}' failed:\n{}", path, infoLog)
+            fmt::format("Compilation of shader '{}' failed:\n{}", p.string(), infoLog)
         };
     }
 }
@@ -71,6 +70,10 @@ Shader::~Shader() {
 }
 
 /* Program implementation */
+Program::Program(path vpath, path fpath)
+    : Program { Shader { vpath }, Shader { fpath } }
+{ }
+
 Program::Program(const Shader &vsh, const Shader &fsh)
     : GLObject { glCreateProgram() }
 {
