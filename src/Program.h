@@ -18,30 +18,29 @@ public:
     ~Shader();
 };
 
-class Program : public GLObject {
-private:
-    class ProgramHandle {
-    public:
-        ProgramHandle(GLuint id) {
-            glUseProgram(id);
-        }
-
-        ~ProgramHandle() {
-            glUseProgram(0);
-        }
-    };
+class ProgramHandle {
+    friend class Program;
 
 public:
-    Program(boost::filesystem::path vpath, boost::filesystem::path fpath);
-    Program(const Shader &vsh, const Shader &fsh);
-    ~Program();
+    ~ProgramHandle();
 
     GLint location(string name) const;
 
     template<typename T>
     void setUniform(string name, const T &val);
 
-    ProgramHandle use() {
-        return { id };
-    }
+protected:
+    ProgramHandle(GLuint id);
+
+private:
+    GLuint program;
+};
+
+class Program : public GLObject {
+public:
+    Program(boost::filesystem::path vpath, boost::filesystem::path fpath);
+    Program(const Shader &vsh, const Shader &fsh);
+    ~Program();
+
+    ProgramHandle use();
 };

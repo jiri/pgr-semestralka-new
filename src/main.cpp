@@ -184,16 +184,16 @@ int main() {
         {
             auto handle = phong.use();
 
-            phong.setUniform("projection", projection);
-            phong.setUniform("view", as.camera.viewMatrix());
-            phong.setUniform("model", cubeModel);
+            handle.setUniform("projection", projection);
+            handle.setUniform("view", as.camera.viewMatrix());
+            handle.setUniform("model", cubeModel);
 
-            phong.setUniform("light", light);
-            phong.setUniform("light.position", vec3(lightModel * vec4(0.0f, 0.0f, 0.0f, 1.0f)));
+            handle.setUniform("light", light);
+            handle.setUniform("light.position", vec3(lightModel * vec4(0.0f, 0.0f, 0.0f, 1.0f)));
 
-            phong.setUniform("cameraPosition", as.camera.position);
+            handle.setUniform("cameraPosition", as.camera.position);
 
-            phong.setUniform("material", cube.material);
+            handle.setUniform("material", cube.material);
 
             cube.draw(phong);
         }
@@ -201,14 +201,14 @@ int main() {
         {
             auto handle = lamp.use();
 
-            lamp.setUniform("projection", projection);
-            lamp.setUniform("view", as.camera.viewMatrix());
-            lamp.setUniform("model", lightModel);
+            handle.setUniform("projection", projection);
+            handle.setUniform("view", as.camera.viewMatrix());
+            handle.setUniform("model", lightModel);
 
-            lamp.setUniform("light", light);
-            lamp.setUniform("light.position", vec3(lightModel * vec4(0.0f, 0.0f, 0.0f, 1.0f)));
+            handle.setUniform("light", light);
+            handle.setUniform("light.position", vec3(lightModel * vec4(0.0f, 0.0f, 0.0f, 1.0f)));
 
-            lamp.setUniform("cameraPosition", as.camera.position);
+            handle.setUniform("cameraPosition", as.camera.position);
 
             light.draw(lamp);
         }

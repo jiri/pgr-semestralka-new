@@ -55,7 +55,7 @@ Texture::~Texture() {
 }
 
 template <>
-void Program::setUniform(string name, const Texture &t) {
+void ProgramHandle::setUniform(string name, const Texture &t) {
     glActiveTexture(GL_TEXTURE0 + static_cast<GLenum>(t.unit));
     glBindTexture(GL_TEXTURE_2D, t);
 

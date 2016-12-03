@@ -69,6 +69,21 @@ Shader::~Shader() {
     glDeleteShader(id);
 }
 
+/* ProgramHandle implementation */
+ProgramHandle::ProgramHandle(GLuint id)
+        : program { id }
+{
+    glUseProgram(id);
+}
+
+ProgramHandle::~ProgramHandle() {
+    glUseProgram(0);
+}
+
+GLint ProgramHandle::location(string name) const {
+    return glGetUniformLocation(program, name.c_str());
+}
+
 /* Program implementation */
 Program::Program(path vpath, path fpath)
     : Program { Shader { vpath }, Shader { fpath } }
@@ -102,6 +117,6 @@ Program::~Program() {
     glDeleteProgram(id);
 }
 
-GLint Program::location(string name) const {
-    return glGetUniformLocation(id, name.c_str());
+ProgramHandle Program::use() {
+    return { id };
 }

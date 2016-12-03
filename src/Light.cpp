@@ -10,7 +10,7 @@ Light::Light(const vec3 &c)
 { }
 
 template <>
-void Program::setUniform(string name, const Light &l) {
+void ProgramHandle::setUniform(string name, const Light &l) {
     setUniform(name + ".ambient",  l.ambient);
     setUniform(name + ".diffuse",  l.diffuse);
     setUniform(name + ".specular", l.specular);
