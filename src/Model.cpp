@@ -181,7 +181,7 @@ void Model::loadData(const vector<GLfloat> &vertices, const vector<GLuint> &indi
     glBindVertexArray(0);
 }
 
-void Model::draw(Program &p) const {
+void Model::draw() const {
     glBindVertexArray(vao);
 
     glDrawElements(GL_TRIANGLES, numIndices, GL_UNSIGNED_INT, nullptr);

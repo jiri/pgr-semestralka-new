@@ -195,7 +195,7 @@ int main() {
 
             handle.setUniform("material", cube.material);
 
-            cube.draw(phong);
+            cube.draw();
         }
 
         {
@@ -210,7 +210,7 @@ int main() {
 
             handle.setUniform("cameraPosition", as.camera.position);
 
-            light.draw(lamp);
+            light.draw();
         }
 
         /* Present */

@@ -34,7 +34,7 @@ public:
 
     virtual ~Model();
 
-    void draw(Program &program) const;
+    void draw() const;
 
     Material material;
 };
