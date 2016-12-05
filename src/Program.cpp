@@ -1,6 +1,5 @@
 #include "Program.h"
 
-#include <iostream>
 #include <stdexcept>
 using namespace std;
 
@@ -37,6 +36,10 @@ namespace {
 }
 
 /* Shader implementation */
+Shader::Shader(gsl::czstring p)
+    : Shader { path { p } }
+{ }
+
 Shader::Shader(path p)
     : Shader { p, guessTypeFromPath(p) }
 { }
@@ -58,7 +61,6 @@ Shader::Shader(path p, GLenum type)
         GLchar infoLog[512];
         glGetShaderInfoLog(id, 512, nullptr, infoLog);
 
-        /* TODO: Possible resource leak here */
         throw runtime_error {
             fmt::format("Compilation of shader '{}' failed:\n{}", p.string(), infoLog)
         };
@@ -71,7 +73,7 @@ Shader::~Shader() {
 
 /* ProgramHandle implementation */
 ProgramHandle::ProgramHandle(GLuint id)
-        : program { id }
+    : program { id }
 {
     glUseProgram(id);
 }
@@ -85,10 +87,6 @@ GLint ProgramHandle::location(string name) const {
 }
 
 /* Program implementation */
-Program::Program(path vpath, path fpath)
-    : Program { Shader { vpath }, Shader { fpath } }
-{ }
-
 Program::Program(const Shader &vsh, const Shader &fsh)
     : GLObject { glCreateProgram() }
 {

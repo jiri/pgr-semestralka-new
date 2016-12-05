@@ -143,12 +143,10 @@ int main() {
     Program lamp  { "shd/light.vert", "shd/light.frag" };
 
     /* Load data */
-    auto cube = Model { "res/chalet2.obj" };
+    auto cube = Model { "res/dragon.obj" };
     auto cubeModel = scale(vec3 { 1.0f }) * rotate(radians(-180.0f), vec3 { 0.0f, 1.0f, 0.0f });
 
-    auto light = Light {
-        vec3 { 1.0f, 1.0f, 0.7f },
-    };
+    auto light = Light { vec3 { 1.0f, 1.0f, 0.7f } };
     auto lightModel = mat4 { 1.0f };
 
     /* Matrices */
@@ -189,7 +187,7 @@ int main() {
             handle.setUniform("model", cubeModel);
 
             handle.setUniform("light", light);
-            handle.setUniform("light.position", vec3(lightModel * vec4(0.0f, 0.0f, 0.0f, 1.0f)));
+            handle.setUniform("light.position", vec3 { lightModel * vec4 { 0.0f, 0.0f, 0.0f, 1.0f } });
 
             handle.setUniform("cameraPosition", as.camera.position);
 
@@ -206,7 +204,7 @@ int main() {
             handle.setUniform("model", lightModel);
 
             handle.setUniform("light", light);
-            handle.setUniform("light.position", vec3(lightModel * vec4(0.0f, 0.0f, 0.0f, 1.0f)));
+            handle.setUniform("light.position", vec3 { lightModel * vec4 { 0.0f, 0.0f, 0.0f, 1.0f } });
 
             handle.setUniform("cameraPosition", as.camera.position);
 
