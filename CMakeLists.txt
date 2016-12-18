@@ -1,15 +1,17 @@
 cmake_minimum_required(VERSION 3.6)
 project(semestralka)
 
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake-modules/")
 set(CMAKE_CXX_FLAGS "-std=c++1z")
 
 # Add libraries
-find_package(OpenGL REQUIRED)
-find_package(GLEW   REQUIRED STATIC)
-find_package(glfw3  REQUIRED)
-find_package(glm    REQUIRED)
-find_package(Boost  REQUIRED COMPONENTS system filesystem)
-find_package(fmt    REQUIRED)
+find_package(OpenGL  REQUIRED)
+find_package(GLEW    REQUIRED STATIC)
+find_package(glfw3   REQUIRED)
+find_package(glm     REQUIRED)
+find_package(Boost   REQUIRED COMPONENTS system filesystem)
+find_package(fmt     REQUIRED)
+find_package(YamlCpp REQUIRED)
 
 # Add GSL
 add_library(gsl INTERFACE)
@@ -42,7 +44,7 @@ if (APPLE)
 endif ()
 
 # Add targets
-set(SOURCE_FILES src/main.cpp src/Program.cpp src/Program.h src/Model.cpp src/Model.h src/Camera.cpp src/Camera.h src/Light.cpp src/Light.h src/GLObject.cpp src/GLObject.h src/glmUniforms.cpp src/Material.cpp src/Material.h src/Texture.cpp src/Texture.h)
+set(SOURCE_FILES src/main.cpp src/Program.cpp src/Program.h src/model.cpp src/model.h src/Camera.cpp src/Camera.h src/Light.cpp src/Light.h src/GLObject.cpp src/GLObject.h src/glmUniforms.cpp src/Material.cpp src/Material.h src/Texture.cpp src/Texture.h src/geometry.cpp src/geometry.h)
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 
@@ -54,6 +56,7 @@ target_include_directories(
         ${GLM_INCLUDE_DIRS}
         ${Boost_INCLUDE_DIRS}
         ${fmt_INCLUDE_DIRS}
+        ${YAMLCPP_INCLUDE_DIR}
         tinyobjloader/
 )
 
@@ -64,6 +67,7 @@ target_link_libraries(
         glfw
         ${GLM_LIBRARIES}
         ${Boost_LIBRARIES}
+        ${YAMLCPP_LIBRARY}
         fmt
         imgui
         soil

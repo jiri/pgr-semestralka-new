@@ -11,6 +11,7 @@
       <sourceFolder url="file://$MODULE_DIR$/SOIL/src/image_DXT.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/SOIL/src/image_helper.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/Material.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/geometry.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/Texture.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/GLObject.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/Light.h" isTestSource="false" />
@@ -23,9 +24,11 @@
       <sourceFolder url="file://$MODULE_DIR$/src/main.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/Program.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/glmUniforms.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/geometry.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/GLObject.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/Camera.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/Model.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/cmake-modules/FindYamlCpp.cmake" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/imgui/src/imgui_draw.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/imgui/src/imgui.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/imgui/src/imgui_demo.cpp" isTestSource="false" />
@@ -209,6 +212,7 @@
           <root url="file:///System/Library/Frameworks/Accelerate.framework/Frameworks/vecLib.framework/Headers" />
           <root url="file:///Library/Developer/CommandLineTools/usr/lib/clang/8.0.0/include" />
           <root url="file:///Library/Developer/CommandLineTools/usr/include" />
+          <root url="file:///Library/Frameworks/Mono.framework/Headers" />
           <root url="file:///Library/Frameworks/iTunesLibrary.framework/Headers" />
           <root url="file:///usr/include" />
           <root url="file:///usr/local/include" />
@@ -387,6 +391,7 @@
           <root url="file:///System/Library/Frameworks/Accelerate.framework/Frameworks/vecLib.framework/Headers" />
           <root url="file:///Library/Developer/CommandLineTools/usr/lib/clang/8.0.0/include" />
           <root url="file:///Library/Developer/CommandLineTools/usr/include" />
+          <root url="file:///Library/Frameworks/Mono.framework/Headers" />
           <root url="file:///Library/Frameworks/iTunesLibrary.framework/Headers" />
           <root url="file:///usr/include" />
           <root url="file:///usr/local/include" />

@@ -1,40 +1,17 @@
 #pragma once
 
-#include <vector>
-#include <string>
-using namespace std;
-
-#include <glm/glm.hpp>
-#include <glm/gtc/type_ptr.hpp>
-using namespace glm;
-
 #include <GL/glew.h>
 
-#include "Program.h"
 #include "Material.h"
+#include "geometry.h"
 
-class Model {
-protected:
-    GLuint vao;
-    GLuint vbo, ebo;
-
-    GLuint numIndices;
-
-    void loadData(const vector<GLfloat> &vertices, const vector<GLuint> &indices);
-
+class model {
 public:
-    Model();
-    Model(const string &filename);
+    model(boost::filesystem::path p);
 
-    Model(const Model &other) = delete;
-    Model& operator=(const Model &other) = delete;
+private:
+    model::model(tuple<vector<GLfloat>, vector<GLuint>, material> t);
 
-    Model(Model &&other);
-    Model& operator=(Model &&other);
-
-    virtual ~Model();
-
-    void draw() const;
-
-    Material material;
+    geometry g;
+    material m;
 };

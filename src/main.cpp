@@ -20,10 +20,11 @@ using namespace std;
 using namespace glm;
 
 #include <tiny_obj_loader.h>
+#include <yaml-cpp/yaml.h>
 
 #include "Program.h"
 #include "Camera.h"
-#include "Model.h"
+#include "model.h"
 #include "Light.h"
 
 void error_callback(int /* error */, const char *message) {
@@ -39,7 +40,7 @@ struct AppState {
 };
 
 void key_callback(GLFWwindow *w, int key, int scancode, int action, int mods) {
-    auto& as = *static_cast<AppState *>(glfwGetWindowUserPointer(w));
+    auto &as = *static_cast<AppState*>(glfwGetWindowUserPointer(w));
 
     if (action == GLFW_PRESS) {
         as.keys[key] = true;
@@ -138,12 +139,14 @@ int main() {
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
 
+    YAML::Node config = YAML::LoadFile("config.yml");
+
     /* Load shaders */
     Program phong { "shd/phong.vert", "shd/phong.frag" };
     Program lamp  { "shd/light.vert", "shd/light.frag" };
 
     /* Load data */
-    auto cube = Model { "res/dragon.obj" };
+    auto cube = model { "res/chalet2.obj" };
     auto cubeModel = scale(vec3 { 1.0f }) * rotate(radians(-180.0f), vec3 { 0.0f, 1.0f, 0.0f });
 
     auto light = Light { vec3 { 1.0f, 1.0f, 0.7f } };
@@ -180,7 +183,7 @@ int main() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         {
-            auto handle = phong.use();
+            auto handle = cube.material.program->use();
 
             handle.setUniform("projection", projection);
             handle.setUniform("view", as.camera.viewMatrix());

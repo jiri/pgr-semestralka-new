@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Model.h"
+#include "model.h"
 
 #include <glm/glm.hpp>
 using namespace glm;
